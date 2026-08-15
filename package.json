@@ -10,10 +10,38 @@
     "test": "jest"
   },
   "dependencies": {
+    "@react-native-community/datetimepicker": "^9.1.0",
+    "@react-native-community/netinfo": "^12.0.1",
+    "@react-native/new-app-screen": "0.83.1",
+    "@react-navigation/bottom-tabs": "^7.18.16",
+    "@react-navigation/drawer": "^7.13.8",
+    "@react-navigation/native": "^7.3.16",
+    "@react-navigation/native-stack": "^7.18.8",
+    "@reduxjs/toolkit": "^2.12.0",
+    "axios": "^1.19.0",
     "react": "19.2.0",
     "react-native": "0.83.1",
-    "@react-native/new-app-screen": "0.83.1",
-    "react-native-safe-area-context": "^5.5.2"
+    "react-native-element-dropdown": "^2.12.4",
+    "react-native-gesture-handler": "^3.1.0",
+    "react-native-image-picker": "^8.2.1",
+    "react-native-linear-gradient": "^2.8.3",
+    "react-native-mmkv": "^4.3.2",
+    "react-native-nitro-modules": "^0.36.5",
+    "react-native-permissions": "^5.6.1",
+    "react-native-reanimated": "^4.5.3",
+    "react-native-render-html": "^6.3.4",
+    "react-native-safe-area-context": "^5.8.1",
+    "react-native-screens": "4.19.0",
+    "react-native-shimmer-placeholder": "^2.0.9",
+    "react-native-snackbar": "^3.0.1",
+    "react-native-svg": "^15.15.5",
+    "react-native-swiper": "^1.6.0",
+    "react-native-switch": "^1.5.1",
+    "react-native-toast-message": "^2.4.0",
+    "react-native-vector-icons": "^10.3.0",
+    "react-native-worklets": "^0.11.3",
+    "react-redux": "^9.3.0",
+    "redux-persist": "^6.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
@@ -37,5 +65,6 @@
   },
   "engines": {
     "node": ">=20"
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }

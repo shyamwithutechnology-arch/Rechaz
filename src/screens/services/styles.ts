@@ -1,0 +1,276 @@
+import { StyleSheet } from "react-native";
+import { AppTheme } from "../../hooks/useAppTheme";
+import { fonts } from "../../theme";
+
+export const createStyles = (theme: AppTheme) => {
+  const { verticalScale, scale, tokens, normalize, moderateScale } = theme;
+  return StyleSheet.create({
+    profileImg: {
+      width: "10%",
+      aspectRatio: 1,
+      marginRight: tokens.spacing.sm,
+    },
+    innerContainer: {
+      paddingHorizontal: tokens.spacing.md,
+    },
+    userName: {
+      fontSize: tokens.fontSize.sm,
+      fontFamily: fonts.UrbanistMedium,
+      color: tokens.colors.blackDark,
+    },
+    locationBox: {
+      left: -1,
+      marginRight: tokens.spacing.xs,
+    },
+    userText: {
+      fontSize: tokens.fontSize.xs,
+      fontFamily: fonts.UrbanistMedium,
+      color: tokens.colors.secondaryDark,
+    },
+    notificationIcon: {
+      height: moderateScale(16),
+      width: moderateScale(16),
+    },
+    servicesText: {
+      fontSize: tokens.fontSize.md,
+      color: tokens.colors.black,
+      fontFamily: fonts.UrbanistMedium,
+      marginLeft: tokens.spacing.md,
+    },
+    headerRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      paddingBottom: tokens.spacing.xs,
+    },
+    notificationBox: {
+      width: moderateScale(28),
+      height: moderateScale(28),
+      borderRadius: tokens.radius.lg,
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: tokens.colors.gray8,
+      elevation: 5,
+      shadowColor: tokens.colors.primary,
+    },
+
+    badge: {
+      position: "absolute",
+      top: verticalScale(-3),
+      right: scale(-4),
+      minWidth: scale(14),
+      height: verticalScale(14),
+      aspectRatio: 1,
+      borderRadius: tokens.radius.md,
+      backgroundColor: "red",
+      alignItems: "center",
+      justifyContent: "center",
+      paddingHorizontal: tokens.spacing.xxs,
+    },
+    badgeText: {
+      fontSize: tokens.fontSize.xxs,
+      fontFamily: fonts.UrbanistBold,
+      color: tokens.colors.white,
+    },
+
+    countText: {
+      fontSize: tokens.fontSize.xxs,
+      fontFamily: fonts.UrbanistBold,
+      color: tokens.colors.white,
+    },
+    notificationContainer: {
+      borderWidth: 1,
+      borderColor: "#000",
+    },
+    notificationAndUserBox: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      // marginTop: tokens.spacing.xs,
+      backgroundColor: tokens.colors.lightPrimary,
+      paddingHorizontal: tokens.spacing.md,
+      // borderWidth: 1,
+      paddingTop: tokens.spacing.xs,
+      paddingBottom: tokens.spacing.xs,
+    },
+    location: {
+      marginTop: theme.tokens.spacing.lg,
+      justifyContent: "space-between",
+      width: "100%",
+    },
+    serchBox: {
+      paddingVertical: tokens.spacing.xxs,
+      borderWidth: 1,
+      borderRadius: tokens.spacing.lg,
+      paddingLeft: tokens.spacing.md,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      paddingRight: tokens.spacing.xs,
+      borderColor: tokens.colors.lightGray,
+      marginVertical: tokens.spacing.md,
+    },
+
+    InputBox: {
+      fontSize: tokens.fontSize.sm,
+      fontFamily: fonts.UrbanistMedium,
+      color: tokens.colors.lightGray,
+    },
+    seachBox: {
+      height: verticalScale(36),
+      aspectRatio: 1,
+      marginVertical: tokens.spacing.xxs,
+      borderRadius: tokens.spacing.xxl,
+      backgroundColor: tokens.colors.primary,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    bannerImg: {
+      width: "100%",
+      height: verticalScale(150),
+    },
+    myBookingBox: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      marginTop: verticalScale(20),
+      marginBottom: verticalScale(10),
+      // marginHorizontal: scale(6),
+      // borderWidth: 1,
+    },
+    headerMainBox: {
+      flex: 1,
+      marginTop: tokens.spacing.smPlus,
+    },
+    myBookingText: {
+      fontSize: tokens.fontSize.smPlus,
+      fontFamily: fonts.UrbanistSemiBold,
+      color: tokens.colors.black,
+    },
+    mobileRechargeText: {
+      fontSize: tokens.fontSize.smPlus,
+      fontFamily: fonts.UrbanistBold,
+      color: tokens.colors.blackDark,
+      marginBottom: verticalScale(10),
+    },
+    seeAllText: {
+      fontSize: tokens.fontSize.xxs,
+      fontFamily: fonts.UrbanistMedium,
+      color: tokens.colors.blackDark,
+    },
+    bookingServiceItemBox: {
+      width: scale(100),
+      height: verticalScale(100),
+      // height: verticalScale(80),
+      borderRadius: tokens.radius.xxl,
+      // paddingLeft: tokens.spacing.md,
+      borderWidth: 1,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      marginRight: tokens.spacing.sm,
+      backgroundColor: tokens.colors.white,
+      elevation: 5,
+      shadowColor: "rgba(18, 148, 137, 0.33)",
+    },
+
+    serviceItemBox: {
+      width: scale(60),
+      height: verticalScale(50),
+      borderRadius: tokens.radius.md,
+      marginBottom: tokens.spacing.sm,
+      paddingVertical: tokens.spacing.smPlus,
+      backgroundColor: "#e5e5e5",
+      elevation: 5,
+      shadowColor: "rgba(18, 148, 137, 0.33)",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    serviceWrapper: {
+      alignItems: "center",
+      width: scale(80),
+      marginRight: tokens.spacing.sm,
+      overflow: "visible",
+      // backgroundColor: '#ebe9e9',
+      backgroundColor: "#ededed",
+      elevation: 10,
+      shadowColor: "#cac7c7",
+      borderRadius: tokens.radius.md,
+      paddingVertical: tokens.spacing.xsPlus,
+      paddingHorizontal: tokens.spacing.xsPlus,
+      borderWidth: 1,
+      borderColor: "#dcdcdc",
+    },
+    columnWrapperStyle: {
+      justifyContent: "flex-start",
+    },
+    serviceIcon: {
+      height: moderateScale(45),
+      width: moderateScale(45),
+    },
+    serviceText: {
+      fontSize: normalize(11),
+      color: tokens.colors.headingColor,
+      fontFamily: fonts.UrbanistSemiBold,
+      marginTop: tokens.spacing.xs,
+      textAlign: "center",
+    },
+    firstItemText: {
+      // marginTop: tokens.spacing.sm,
+    },
+    sempleText: {
+      fontSize: tokens.fontSize.xs,
+      color: tokens.colors.lightGray,
+      fontFamily: fonts.UrbanistMedium,
+      textAlign: "left",
+    },
+    arrowCircle: {
+      height: verticalScale(40),
+      aspectRatio: 1,
+      alignItems: "center",
+      justifyContent: "center",
+      borderRadius: tokens.radius.xxl,
+      backgroundColor: "rgba(19, 186, 172, 0.12)",
+      alignSelf: "flex-end",
+      marginRight: tokens.spacing.sm,
+    },
+
+    arrowIcon: {
+      height: moderateScale(30),
+      aspectRatio: 1,
+    },
+    calenderIcon: {
+      height: moderateScale(18),
+      width: moderateScale(18),
+    },
+    timeText: {
+      fontSize: tokens.fontSize.xs,
+      color: tokens.colors.lightGray,
+      fontFamily: fonts.UrbanistMedium,
+      marginLeft: tokens.spacing.sm,
+    },
+    serviceItem: {
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    priceBox: {
+      width: scale(60),
+      height: verticalScale(80),
+      borderTopRightRadius: tokens.radius.md,
+      borderBottomRightRadius: tokens.radius.md,
+      backgroundColor: "#0C8485",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    priceText: {
+      fontSize: normalize(11),
+      color: tokens.colors.white,
+      fontFamily: fonts.UrbanistSemiBold,
+      marginBottom: tokens.spacing.sm,
+    },
+    currencyText: {
+      fontSize: tokens.fontSize.md,
+      color: tokens.colors.white,
+      fontFamily: fonts.UrbanistBold,
+    },
+  });
+};

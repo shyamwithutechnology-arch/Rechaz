@@ -1,0 +1,22 @@
+export const ApiEndPoint = {
+  LoGIN: 'loginapi',
+  MOBILE_OPERATOR: 'get_mobile_operator_circle.php',
+  do_recharge: 'user_api_service/recharge/do_recharge.php?',
+  rechargeReport: 'api/v1/recharge_report.php',
+  api_balance: 'api/v1/api_balance.php',
+  apiWalletHistory: 'api/v1/apiWalletHistory.php?',
+  addPaymentRequest: 'api/v1/addPaymentRequest.php',
+  fetchPaymentRequest: 'api/v1/addPaymentRequestList.php?',
+  doRecharge: 'user_api_service/dth/do_recharge.php?',
+  addBank: 'api/v1/payoutAddBank.php',
+  bankList: 'getcompanybanklist',
+  payoutDoTrasaction: 'api/v1/payoutDoTrnasaction.php',
+
+  profile: 'edit_profile',
+  updateMyProfile: 'update_my_profile',
+  fundRequest: 'fund_request',
+  fundRequestList: 'fund_request_list',
+  getusebyid: 'getusebyid',
+  getCompanyBanklist: 'getcompanybanklist',
+  // do_recharge: 'recharge/do_recharge.php?',
+};
