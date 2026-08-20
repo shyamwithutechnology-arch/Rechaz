@@ -68,8 +68,8 @@ export const createStyles = (theme: AppTheme) => {
       width: moderateScale(25),
     },
     faildIcon: {
-      height: moderateScale(18),
-      width: moderateScale(18),
+      height: moderateScale(16),
+      width: moderateScale(16),
     },
     paymentSuccessText: {
       fontSize: tokens.fontSize.lg,
@@ -145,6 +145,12 @@ export const createStyles = (theme: AppTheme) => {
       borderRadius: tokens.spacing.sm,
       marginBottom: tokens.spacing.lg,
       marginTop: tokens.spacing.sm,
+    },
+    btnBox: {
+      width: '50%',
+      marginVertical: verticalScale(10),
+      paddingVertical: verticalScale(10),
+      // height: verticalScale(10),
     },
   });
 };

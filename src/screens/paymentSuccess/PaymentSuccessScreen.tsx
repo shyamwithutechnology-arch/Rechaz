@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from 'react';
 import {
   Animated,
   BackHandler,
@@ -7,14 +7,14 @@ import {
   Pressable,
   Text,
   View,
-} from "react-native";
-import { ScreenLayout, AppHeader, CustomButton } from "../../component";
-import { formatDateWithTime } from "../../utils/date";
-import { useAppTheme } from "../../hooks/useAppTheme";
-import LinearGradient from "react-native-linear-gradient";
-import { Icons } from "../../assets/icons";
-import { createStyles } from "./styles";
-import { useRoute } from "@react-navigation/native";
+} from 'react-native';
+import { ScreenLayout, AppHeader, CustomButton } from '../../component';
+import { formatDateWithTime } from '../../utils/date';
+import { useAppTheme } from '../../hooks/useAppTheme';
+import LinearGradient from 'react-native-linear-gradient';
+import { Icons } from '../../assets/icons';
+import { createStyles } from './styles';
+import { useRoute } from '@react-navigation/native';
 
 type Props = {
   navigation: any;
@@ -28,11 +28,11 @@ const PaymentSuccessScreen = ({ navigation }: Props) => {
   // let paymentStatus = 1;
   const today = new Date();
 
-  const date = today.toLocaleDateString("en-IN");
+  const date = today.toLocaleDateString('en-IN');
 
-  const time = today.toLocaleTimeString("en-IN", {
-    hour: "2-digit",
-    minute: "2-digit",
+  const time = today.toLocaleTimeString('en-IN', {
+    hour: '2-digit',
+    minute: '2-digit',
     hour12: true,
   });
 
@@ -40,17 +40,17 @@ const PaymentSuccessScreen = ({ navigation }: Props) => {
   const successOpacity = useRef(new Animated.Value(0)).current;
 
   const handleReceipt = () => {
-    navigation.navigate("Home");
+    navigation.goBack();
   };
 
   useEffect(() => {
     const backAction = () => {
-      navigation.navigate("Service");
+      navigation.navigate('Service');
       return true;
     };
 
     const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
+      'hardwareBackPress',
       backAction,
     );
 
@@ -104,7 +104,7 @@ const PaymentSuccessScreen = ({ navigation }: Props) => {
   return (
     <ScreenLayout paddingHorizontalStyle={0} innerContainer={styles.container}>
       <LinearGradient
-        colors={["#fff", "#D6EAE8", "#D6EAE8", "#D6EAE8", "#D6EAE8"]}
+        colors={['#fff', '#D6EAE8', '#D6EAE8', '#D6EAE8', '#D6EAE8']}
         style={styles.homeContainer}
       >
         <View style={styles.ticketCard}>
@@ -122,7 +122,7 @@ const PaymentSuccessScreen = ({ navigation }: Props) => {
                 styles.rightIconBox,
                 {
                   backgroundColor:
-                    paymentStatus === 1 ? styles.successBg : "red",
+                    paymentStatus === 1 ? styles.successBg : 'red',
                 },
               ]}
             >
@@ -135,19 +135,19 @@ const PaymentSuccessScreen = ({ navigation }: Props) => {
                 ]}
                 ressizeMode="contain"
                 tintColor={
-                  paymentStatus === 1 ? "#fff" : theme.tokens.colors.white
+                  paymentStatus === 1 ? '#fff' : theme.tokens.colors.white
                 }
               />
             </View>
           </Animated.View>
 
           <Text style={styles.paymentSuccessText}>
-            {paymentStatus === 1 ? "Payment Success!" : "Payment Failed"}
+            {paymentStatus === 1 ? 'Payment Success!' : 'Payment Failed'}
           </Text>
           <Text style={styles.yourPayment}>
-            Your payment has been successfully done.
+            Your payment has been{' '}
+            {paymentStatus === 1 ? 'successfully done' : 'failed'}.
           </Text>
-
           <View style={styles.leftCurve} />
           <View style={styles.rightCurve} />
 
@@ -177,9 +177,9 @@ const PaymentSuccessScreen = ({ navigation }: Props) => {
             <Text style={styles.orderIdText}>Time</Text>
             <Text style={styles.orderCareText}>{time}</Text>
           </View>
-          <View style={[styles.orderBox, { marginBottom: 0 }]}>
+          <View style={[styles.orderBox]}>
             <Text style={styles.orderIdText}>Payment Method</Text>
-            <Text style={styles.orderCareText}>Credit Card</Text>
+            <Text style={styles.orderCareText}>Wallet</Text>
           </View>
           <View style={[styles.orderBox, { marginBottom: 0 }]}>
             <Text style={styles.orderIdText}>Status</Text>
@@ -189,7 +189,7 @@ const PaymentSuccessScreen = ({ navigation }: Props) => {
                 paymentStatus === 1 ? styles.successText : styles.faildText,
               ]}
             >
-              {paymentStatus === 1 ? "Success" : "Faild"}
+              {paymentStatus === 1 ? 'Success' : 'Faild'}
             </Text>
           </View>
 
@@ -208,3 +208,9 @@ const PaymentSuccessScreen = ({ navigation }: Props) => {
 };
 
 export default PaymentSuccessScreen;
+
+//  <CustomButton
+//             title="Home"
+//             style={styles.btnBox}
+//             onPress={handleReceipt}
+//           />

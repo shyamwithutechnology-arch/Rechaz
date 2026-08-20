@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -8,8 +8,13 @@ import {
 } from 'react-native';
 import { useAppTheme } from '../../hooks/useAppTheme';
 import { createStyles } from './styles';
-import { AppHeader, ScreenLayout } from '../../component';
+import { AppHeader, Loader, ScreenLayout } from '../../component';
 import { verticalScale } from '../../utils/responsiveSize';
+import { localStorage, storageKeys } from '../../storage/storage';
+import { POST_FORM } from '../../api/request';
+import { ApiEndPoint } from '../../api/endPoints';
+import { showToast } from '../../utils/toast';
+import { formatDateDayMonthShortYear } from '../../utils/date';
 
 const HISTORY_DATA = [
   {
@@ -68,6 +73,9 @@ const HISTORY_DATA = [
 const WalletHistoryScreen = ({ navigation }) => {
   const theme = useAppTheme();
   const styles = createStyles(theme);
+
+  const [rechargeHistory, setRechargeHistory] = useState([]);
+  const [loading, setLoading] = useState(false);
   const getStatusStyle = (status: string) => {
     switch (status) {
       case 'SUCCESS':
@@ -88,12 +96,123 @@ const WalletHistoryScreen = ({ navigation }) => {
     }
   };
 
-  const renderItem = ({ item }) => {
+  const handleHistory = async id => {
+    const params = {
+      userId: id,
+      fromDate: '',
+      toDate: '',
+    };
+
+    try {
+      setLoading(true);
+      const response = await POST_FORM(
+        ApiEndPoint.mobileRechargeViewAll,
+        params,
+      );
+      if (response?.status === 200) {
+        setRechargeHistory(response?.data?.slice(0, 5));
+      } else {
+        showToast('error', 'Error', response?.message);
+        setRechargeHistory([]);
+      }
+    } catch (error) {
+      showToast('error', 'Error', 'Something went wrong');
+      if (error.offline) {
+        return;
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const getId = async () => {
+      let localData = await localStorage.getItem(storageKeys.userData);
+      let formatedData = localData ? JSON.parse(localData) : null;
+      if (formatedData?.id) {
+        await handleHistory(formatedData?.id);
+      }
+    };
+    getId();
+  }, []);
+
+  // const renderItem = ({ item }) => {
+  //   const statusStyle = getStatusStyle(item.status);
+  //   return (
+  //     <View style={styles.card}>
+  //       <View style={styles.headerRow}>
+  //         <Text style={styles.transactionType}>{item.transactionType}</Text>
+
+  //         <View style={[styles.statusBox, { backgroundColor: statusStyle.bg }]}>
+  //           <Text style={[styles.statusText, { color: statusStyle.color }]}>
+  //             {item.status}
+  //           </Text>
+  //         </View>
+  //       </View>
+
+  //       <View style={styles.divider} />
+
+  //       <View style={styles.infoRow}>
+  //         <Text style={styles.label}>Txn ID</Text>
+  //         <Text style={styles.value}>{item.TxnId}</Text>
+  //       </View>
+  //       <View style={styles.infoRow}>
+  //         <Text style={styles.label}>Amount</Text>
+  //         <Text style={styles.value}>{item.amount}</Text>
+  //       </View>
+
+  //       <View style={styles.infoRow}>
+  //         <Text style={styles.label}>Aadhaar</Text>
+  //         <Text style={styles.value}>
+  //           XXXX XXXX {item.adharNo.slice(-4)}
+  //           {'   '}
+  //         </Text>
+  //       </View>
+
+  //       <View style={styles.infoRow}>
+  //         <Text style={styles.label}>Mobile</Text>
+  //         <Text style={styles.value}>{item.mobNo}</Text>
+  //       </View>
+
+  //       <View style={styles.infoRow}>
+  //         <Text style={styles.label}>Bank</Text>
+  //         <Text style={styles.value}>{item.bankName}</Text>
+  //       </View>
+
+  //       <View style={styles.infoRow}>
+  //         <Text style={styles.label}>User</Text>
+  //         <Text style={styles.value}>
+  //           {item.userName} ({item.UserId})
+  //         </Text>
+  //       </View>
+
+  //       <View style={styles.infoRow}>
+  //         <Text style={styles.label}>Outlet</Text>
+  //         <Text style={styles.value}>{item.OutLateName}</Text>
+  //       </View>
+
+  //       <View style={styles.infoRow}>
+  //         <Text style={styles.label}>Reason</Text>
+  //         <Text style={styles.value}>{item.reason}</Text>
+  //       </View>
+
+  //       <View style={styles.footer}>
+  //         <Text style={styles.date}>{item.date}</Text>
+  //       </View>
+  //     </View>
+  //   );
+  // };
+  const renderItem = ({ item }: any) => {
     const statusStyle = getStatusStyle(item.status);
     return (
       <View style={styles.card}>
         <View style={styles.headerRow}>
-          <Text style={styles.transactionType}>{item.transactionType}</Text>
+          <View>
+            {item?.operator && (
+              <Text style={styles.title}>Mobile Recharge</Text>
+            )}
+            <Text style={styles.operator}>{item.operator}</Text>
+          </View>
 
           <View style={[styles.statusBox, { backgroundColor: statusStyle.bg }]}>
             <Text style={[styles.statusText, { color: statusStyle.color }]}>
@@ -102,54 +221,25 @@ const WalletHistoryScreen = ({ navigation }) => {
           </View>
         </View>
 
-        <View style={styles.divider} />
+        <View style={styles.infoRow}>
+          <Text style={styles.label}>Mobile No.</Text>
+          <Text style={styles.value}>{item.mobile}</Text>
+        </View>
 
         <View style={styles.infoRow}>
-          <Text style={styles.label}>Txn ID</Text>
-          <Text style={styles.value}>{item.TxnId}</Text>
+          <Text style={styles.label}>Ref ID</Text>
+          <Text style={styles.value}>{item.ref_id}</Text>
         </View>
+
         <View style={styles.infoRow}>
           <Text style={styles.label}>Amount</Text>
-          <Text style={styles.value}>{item.amount}</Text>
-        </View>
-
-        <View style={styles.infoRow}>
-          <Text style={styles.label}>Aadhaar</Text>
-          <Text style={styles.value}>
-            XXXX XXXX {item.adharNo.slice(-4)}
-            {'   '}
-          </Text>
-        </View>
-
-        <View style={styles.infoRow}>
-          <Text style={styles.label}>Mobile</Text>
-          <Text style={styles.value}>{item.mobNo}</Text>
-        </View>
-
-        <View style={styles.infoRow}>
-          <Text style={styles.label}>Bank</Text>
-          <Text style={styles.value}>{item.bankName}</Text>
-        </View>
-
-        <View style={styles.infoRow}>
-          <Text style={styles.label}>User</Text>
-          <Text style={styles.value}>
-            {item.userName} ({item.UserId})
-          </Text>
-        </View>
-
-        <View style={styles.infoRow}>
-          <Text style={styles.label}>Outlet</Text>
-          <Text style={styles.value}>{item.OutLateName}</Text>
-        </View>
-
-        <View style={styles.infoRow}>
-          <Text style={styles.label}>Reason</Text>
-          <Text style={styles.value}>{item.reason}</Text>
+          <Text style={styles.amount}>₹{Number(item.amount).toFixed(0)}</Text>
         </View>
 
         <View style={styles.footer}>
-          <Text style={styles.date}>{item.date}</Text>
+          <Text style={styles.date}>
+            {formatDateDayMonthShortYear(item.date)}
+          </Text>
         </View>
       </View>
     );
@@ -169,10 +259,12 @@ const WalletHistoryScreen = ({ navigation }) => {
     <ScreenLayout
       header={<AppHeader title="Wallet History" onPress={handleBackPress} />}
     >
+      <Loader visible={loading} />
+
       {/* List */}
       <FlatList
-        data={HISTORY_DATA}
-        keyExtractor={item => item.id}
+        data={rechargeHistory}
+        keyExtractor={item => item?.id}
         renderItem={renderItem}
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={EmptyComponent}

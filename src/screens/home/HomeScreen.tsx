@@ -421,7 +421,7 @@
 
 // export default HomeScreen;
 
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   BackHandler,
   FlatList,
@@ -430,30 +430,31 @@ import {
   Text,
   ToastAndroid,
   View,
-} from "react-native";
+} from 'react-native';
 
-import LinearGradient from "react-native-linear-gradient";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useFocusEffect } from "@react-navigation/native";
+import LinearGradient from 'react-native-linear-gradient';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useFocusEffect } from '@react-navigation/native';
 
-import { AppHeader, Loader, ScreenLayout } from "../../component";
-import { Images } from "../../assets/images";
-import { Icons } from "../../assets/icons";
-import { useAppTheme } from "../../hooks/useAppTheme";
-import { createStyles } from "./styles";
+import { AppHeader, Loader, ScreenLayout } from '../../component';
+import { Images } from '../../assets/images';
+import { Icons } from '../../assets/icons';
+import { useAppTheme } from '../../hooks/useAppTheme';
+import { createStyles } from './styles';
 
 // vector icon
-import DateIcon from "react-native-vector-icons/Fontisto";
-import Icon from "react-native-vector-icons/Octicons";
-import { colors } from "../../theme";
-import { moderateScale, verticalScale } from "../../utils/responsiveSize";
-import AppDatePicker from "../../component/appDatePicker/AppDatePicker";
-import { POST_FORM, RECHARGE_GET } from "../../api/request";
-import { ApiEndPoint } from "../../api/endPoints";
-import { showToast } from "../../utils/toast";
-import { apikey } from "../../api/axios";
-import ImageSlider from "../../component/slider/ImageSlider";
-import { localStorage, storageKeys } from "../../storage/storage";
+import DateIcon from 'react-native-vector-icons/Fontisto';
+import Icon from 'react-native-vector-icons/Octicons';
+import { colors } from '../../theme';
+import { moderateScale, verticalScale } from '../../utils/responsiveSize';
+import AppDatePicker from '../../component/appDatePicker/AppDatePicker';
+import { POST_FORM, RECHARGE_GET } from '../../api/request';
+import { ApiEndPoint } from '../../api/endPoints';
+import { showToast } from '../../utils/toast';
+import { apikey } from '../../api/axios';
+import ImageSlider from '../../component/slider/ImageSlider';
+import { localStorage, storageKeys } from '../../storage/storage';
+import { formatDateDayMonthShortYear } from '../../utils/date';
 
 // ✅ FIXED: Changed named import to Default Import
 // import HomeBannerSlider from './component/homebanner/HomeBannerSlider';
@@ -466,12 +467,14 @@ const HomeScreen = ({ navigation }: any) => {
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
   const [wallet, setWallet] = useState<any>({});
+  const [rechargeHistory, setRechargeHistory] = useState([]);
+
   const backPressCount = useRef(0);
 
-  const formattedDate = date.toLocaleDateString("en-GB", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
+  const formattedDate = date.toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
   });
 
   const handleDate = () => {
@@ -493,8 +496,8 @@ const HomeScreen = ({ navigation }: any) => {
   const banners = [
     // { id: "1", image: Images.homeBannerImg },
     // { id: "2", image: Images.homeBannerImg },
-    { id: "1", image: Images.homeBannerImg1 },
-    { id: "2", image: Images.homeBannerImg1 },
+    { id: '1', image: Images.homeBannerImg1 },
+    { id: '2', image: Images.homeBannerImg1 },
     // { id: "3", image: Images.homeBannerImg2 },
   ];
 
@@ -503,13 +506,13 @@ const HomeScreen = ({ navigation }: any) => {
   const transactionData = [
     {
       id: 1,
-      title: "Mobile Recharge",
-      totalTransAction: "₹0",
-      todayTransAction: "₹0",
+      title: 'Mobile Recharge',
+      totalTransAction: '₹0',
+      todayTransAction: '₹0',
       icon: Icons.mobileRechargeIcon,
-      bgColor: "#EEF5FF",
-      testColor: "#286CBF",
-      type: "Mob",
+      bgColor: '#EEF5FF',
+      testColor: '#286CBF',
+      type: 'Mob',
     },
     // {
     //   id: 2,
@@ -568,23 +571,23 @@ const HomeScreen = ({ navigation }: any) => {
   const recentTransactions = [
     {
       id: 1,
-      name: "Mobile Recharge",
-      amount: "₹399",
-      status: "Success",
+      name: 'Mobile Recharge',
+      amount: '₹399',
+      status: 'Success',
       icon: Icons.mobileRechargeIcon,
     },
     {
       id: 2,
-      name: "Mobile Recharge",
-      amount: "₹749",
-      status: "Success",
+      name: 'Mobile Recharge',
+      amount: '₹749',
+      status: 'Success',
       icon: Icons.mobileRechargeIcon,
     },
     {
       id: 3,
-      name: "Mobile Recharge",
-      amount: "₹299",
-      status: "Success",
+      name: 'Mobile Recharge',
+      amount: '₹299',
+      status: 'Success',
       icon: Icons.mobileRechargeIcon,
     },
     // {
@@ -605,7 +608,7 @@ const HomeScreen = ({ navigation }: any) => {
 
   // -------------------- MAIN --------------------
 
-  const fetchUsebyid = async (id) => {
+  const fetchUsebyid = async id => {
     try {
       setLoading(true);
 
@@ -613,13 +616,13 @@ const HomeScreen = ({ navigation }: any) => {
         user_id: id,
       });
 
-      if (res.status === "200") {
+      if (res.status === '200') {
         setWallet(res?.data);
       } else {
-        showToast("error", "Error", res?.message);
+        showToast('error', 'Error', res?.message);
       }
     } catch (err) {
-      showToast("error", "Error", "Something went wrong");
+      showToast('error', 'Error', 'Something went wrong');
       if (err.offline) {
         return;
       }
@@ -628,6 +631,25 @@ const HomeScreen = ({ navigation }: any) => {
     }
   };
 
+  const getStatusStyle = (status: string) => {
+    switch (status) {
+      case 'Success':
+        return {
+          bg: '#E6F9F1',
+          color: '#0E8D39',
+        };
+      case 'Faild':
+        return {
+          bg: '#FFECEC',
+          color: '#F04438',
+        };
+      default:
+        return {
+          color: '#F79009',
+          bg: '#FFF6E5',
+        };
+    }
+  };
   // const fetchWalletBalance = async () => {
   //   try {
   //     setLoading(true);
@@ -663,7 +685,7 @@ const HomeScreen = ({ navigation }: any) => {
       const onBackPress = () => {
         if (backPressCount.current === 0) {
           backPressCount.current = 1;
-          ToastAndroid.show("Press back again to exit", ToastAndroid.SHORT);
+          ToastAndroid.show('Press back again to exit', ToastAndroid.SHORT);
           setTimeout(() => {
             backPressCount.current = 0;
           }, 2000);
@@ -676,13 +698,54 @@ const HomeScreen = ({ navigation }: any) => {
       };
 
       const subscription = BackHandler.addEventListener(
-        "hardwareBackPress",
+        'hardwareBackPress',
         onBackPress,
       );
 
       return () => subscription.remove();
     }, []),
   );
+
+  const handleHistory = async id => {
+    const params = {
+      userId: id,
+      fromDate: '',
+      toDate: '',
+    };
+
+    try {
+      setLoading(true);
+      const response = await POST_FORM(
+        ApiEndPoint.mobileRechargeViewAll,
+        params,
+      );
+      console.log('Recharge Report =>ssss', response);
+      if (response?.status === 200) {
+        setRechargeHistory(response?.data?.slice(0, 2));
+      } else {
+        showToast('error', 'Error', response?.message);
+        setRechargeHistory([]);
+      }
+    } catch (error) {
+      showToast('error', 'Error', 'Something went wrong');
+      if (error.offline) {
+        return;
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const getId = async () => {
+      let localData = await localStorage.getItem(storageKeys.userData);
+      let formatedData = localData ? JSON.parse(localData) : null;
+      if (formatedData?.id) {
+        await handleHistory(formatedData?.id);
+      }
+    };
+    getId();
+  }, []);
 
   // rightIcon={Icons.notification}
   // rightIconBoxStyle={styles.rightIconBoxStyle}
@@ -713,7 +776,7 @@ const HomeScreen = ({ navigation }: any) => {
 
           <View style={styles.badge}>
             <Text style={styles.badgeText}>
-              {cartCount > 9 ? "9+" : cartCount}
+              {cartCount > 9 ? '9+' : cartCount}
             </Text>
           </View>
         </Pressable>
@@ -733,7 +796,7 @@ const HomeScreen = ({ navigation }: any) => {
               <ImageSlider images={banners} />
 
               <LinearGradient
-                colors={["#0C8485", "#14B8A6"]}
+                colors={['#0E8D39', '#0e8d3885']}
                 style={styles.walletCard}
               >
                 <Text style={styles.walletTitle}>Wallet Balance</Text>
@@ -889,29 +952,59 @@ const HomeScreen = ({ navigation }: any) => {
               {/* RECENT TRANSACTIONS */}
               <View style={styles.myBookingBox}>
                 <Text style={styles.myBookingText}>Recent Transactions</Text>
-                <Text style={styles.seeAllText}>View All</Text>
               </View>
 
-              {recentTransactions.map((item) => {
+              {rechargeHistory.map(item => {
+                const statusStyle = getStatusStyle(item.status);
                 return (
-                  <View key={item.id} style={styles.recentCard}>
-                    <View style={styles.recentLeftRow}>
-                      <View style={styles.recentIconBox}>
-                        <Image
-                          source={item.icon}
-                          style={styles.recentIcon}
-                          resizeMode="contain"
-                        />
+                  <View style={styles.card}>
+                    <View style={styles.headerRow}>
+                      <View>
+                        {item?.operator && (
+                          <Text style={styles.title}>Mobile Recharge</Text>
+                        )}
+                        <Text style={styles.operator}>{item.operator}</Text>
                       </View>
 
-                      <View>
-                        <Text style={styles.recentTitle}>{item.name}</Text>
-
-                        <Text style={styles.recentStatus}>{item.status}</Text>
+                      <View
+                        style={[
+                          styles.statusBox,
+                          { backgroundColor: statusStyle.bg },
+                        ]}
+                      >
+                        <Text
+                          style={[
+                            styles.statusText,
+                            { color: statusStyle.color },
+                          ]}
+                        >
+                          {item.status}
+                        </Text>
                       </View>
                     </View>
 
-                    <Text style={styles.recentAmount}>{item.amount}</Text>
+                    <View style={styles.infoRow}>
+                      <Text style={styles.label}>Mobile No.</Text>
+                      <Text style={styles.value}>{item.mobile}</Text>
+                    </View>
+
+                    <View style={styles.infoRow}>
+                      <Text style={styles.label}>Ref ID</Text>
+                      <Text style={styles.value}>{item.ref_id}</Text>
+                    </View>
+
+                    <View style={styles.infoRow}>
+                      <Text style={styles.label}>Amount</Text>
+                      <Text style={styles.amount}>
+                        ₹{Number(item.amount).toFixed(0)}
+                      </Text>
+                    </View>
+
+                    <View style={styles.footer}>
+                      <Text style={styles.date}>
+                        {formatDateDayMonthShortYear(item.date)}
+                      </Text>
+                    </View>
                   </View>
                 );
               })}

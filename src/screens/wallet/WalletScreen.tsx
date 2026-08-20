@@ -24,7 +24,10 @@ import { apikey } from '../../api/axios';
 import { showToast } from '../../utils/toast';
 import { Icons } from '../../assets/icons';
 import AppDatePicker from '../../component/appDatePicker/AppDatePicker';
-import { formatDateDDMMYYYY } from '../../utils/date';
+import {
+  formatDateDayMonthShortYear,
+  formatDateDDMMYYYY,
+} from '../../utils/date';
 import { localStorage, storageKeys } from '../../storage/storage';
 
 type InputState = {
@@ -37,6 +40,7 @@ const WalletScreen = ({ navigation }) => {
   const theme = useAppTheme();
   const styles = createStyles(theme);
   const [loading, setLoading] = useState(false);
+  const [rechargeHistory, setRechargeHistory] = useState([]);
   const [date, setDate] = useState(new Date());
   const [dateVisible, setDateVisible] = useState(false);
   const [wallet, setWallet] = useState({});
@@ -82,6 +86,7 @@ const WalletScreen = ({ navigation }) => {
       [field]: '',
     }));
   };
+
   const handleDateClose = () => {
     setDateVisible(false);
   };
@@ -174,96 +179,156 @@ const WalletScreen = ({ navigation }) => {
     }
   };
 
-  const renderTxn = ({ item }: any) => {
+  // const renderTxn = ({ item }: any) => {
+  //   return (
+  //     <View style={styles.txnCard}>
+  //       <View style={styles.transHistray}>
+  //         <View style={styles.logoBranch}>
+  //           <Image
+  //             source={handleOperator(item?.operator_id)}
+  //             style={styles.aritelLogo}
+  //           />
+  //         </View>
+  //         <View style={styles.centerContent}>
+  //           <Text style={styles.mobileRechateText}>{item?.mobile_no}</Text>
+  //           <Text style={styles.deductText}>{item?.operator}</Text>
+  //           <Text style={[styles.txnTitle, styles.txntText]}>
+  //             Txn ID : {item?.transaction_id}
+  //           </Text>
+  //         </View>
+  //       </View>
+
+  //       {
+  //         // <Text style={styles.txnTitle}>{formatDateTime(new Date())}</Text>
+  //         // <View style={styles.transHistray}>
+  //         //   <Text style={styles.txnTitle}>Opening Balance</Text>
+  //         //   <Text style={[styles.txnAmount, styles.beforeBalenceText]}>
+  //         //     ₹{item?.before_balance}
+  //         //   </Text>
+  //         // </View>
+  //         // <View style={styles.transHistray}>
+  //         //   <Text style={styles.txnTitle}>Current Balance</Text>
+  //         //   <Text style={[styles.txnAmount, styles.beforeBalenceText]}>
+  //         //     ₹{item?.updated_balance}
+  //         //   </Text>
+  //         // </View>
+  //         // <View style={styles.transHistray}>
+  //         //   <Text style={styles.txnTitle}>Status</Text>
+  //         //   <Text
+  //         //     style={[
+  //         //       styles.txnAmount,
+  //         //       item.status === '1' ? styles.successText : styles.faildText,
+  //         //     ]}
+  //         //   >
+  //         //     {item?.status === '1' ? 'Success' : 'Faild'}
+  //         //   </Text>
+  //         // </View>
+  //       }
+  //       <View>
+  //         <Text style={[styles.txnAmount, styles.amountTextColor]}>
+  //           {item?.deduct_reason === 'Mobile Recharge'
+  //             ? `-₹${item?.deduct_amount}`
+  //             : `+₹${item?.deduct_amount}`}
+  //         </Text>
+  //         {
+  //           // {item?.deduct_reason === 'Mobile Recharge' && (
+  //         }
+  //         <Text
+  //           style={[
+  //             styles.txnAmount,
+  //             item.status === '1' ? styles.successText : styles.faildText,
+  //           ]}
+  //         >
+  //           {item?.status === '1' ? 'Success' : 'Faild'}
+  //         </Text>
+  //         {
+  //           // )}/
+  //         }
+  //         <Text style={[styles.deductText, styles.deductTextSpace]}>
+  //           Balance : {item?.updated_balance}
+  //         </Text>
+
+  //         <Pressable
+  //           style={styles.repeteBox}
+  //           onPress={() => {
+  //             navigation.navigate('ServiceStack', {
+  //               screen: 'MobileRecharge',
+  //               params: {
+  //                 RechargeAmount: item?.deduct_amount,
+  //                 MobNumber: item?.mobile_no,
+  //               },
+  //             });
+  //           }}
+  //         >
+  //           <Image
+  //             source={Icons.repeatIcon}
+  //             style={styles.repeateIcon}
+  //             resizeMode="contain"
+  //           />
+  //           <Text style={styles.repeatText}> Repeat</Text>
+  //         </Pressable>
+  //       </View>
+  //     </View>
+  //   );
+  // };
+  const getStatusStyle = (status: string) => {
+    switch (status) {
+      case 'SUCCESS':
+        return {
+          bg: '#E6F9F1',
+          color: '#12B76A',
+        };
+      case 'FAILED':
+        return {
+          bg: '#FFECEC',
+          color: '#F04438',
+        };
+      default:
+        return {
+          bg: '#FFF6E5',
+          color: '#F79009',
+        };
+    }
+  };
+
+  const renderItem = ({ item }: any) => {
+    const statusStyle = getStatusStyle(item.status);
     return (
-      <View style={styles.txnCard}>
-        <View style={styles.transHistray}>
-          <View style={styles.logoBranch}>
-            <Image
-              source={handleOperator(item?.operator_id)}
-              style={styles.aritelLogo}
-            />
+      <View style={styles.card}>
+        <View style={styles.headerRow}>
+          <View>
+            {item?.operator && (
+              <Text style={styles.title}>Mobile Recharge</Text>
+            )}
+            <Text style={styles.operator}>{item.operator}</Text>
           </View>
-          <View style={styles.centerContent}>
-            <Text style={styles.mobileRechateText}>{item?.mobile_no}</Text>
-            <Text style={styles.deductText}>{item?.deduct_reason}</Text>
-            <Text style={[styles.txnTitle, styles.txntText]}>
-              Txn ID : {item?.transaction_id}
-            </Text>
-            <Text style={styles.txnTitle}>
-              {formatDateTime(item?.transaction_date)}
+
+          <View style={[styles.statusBox, { backgroundColor: statusStyle.bg }]}>
+            <Text style={[styles.statusText, { color: statusStyle.color }]}>
+              {item.status}
             </Text>
           </View>
         </View>
 
-        {
-          // <View style={styles.transHistray}>
-          //   <Text style={styles.txnTitle}>Opening Balance</Text>
-          //   <Text style={[styles.txnAmount, styles.beforeBalenceText]}>
-          //     ₹{item?.before_balance}
-          //   </Text>
-          // </View>
-          // <View style={styles.transHistray}>
-          //   <Text style={styles.txnTitle}>Current Balance</Text>
-          //   <Text style={[styles.txnAmount, styles.beforeBalenceText]}>
-          //     ₹{item?.updated_balance}
-          //   </Text>
-          // </View>
-          // <View style={styles.transHistray}>
-          //   <Text style={styles.txnTitle}>Status</Text>
-          //   <Text
-          //     style={[
-          //       styles.txnAmount,
-          //       item.status === '1' ? styles.successText : styles.faildText,
-          //     ]}
-          //   >
-          //     {item?.status === '1' ? 'Success' : 'Faild'}
-          //   </Text>
-          // </View>
-        }
-        <View>
-          <Text style={[styles.txnAmount, styles.amountTextColor]}>
-            {item?.deduct_reason === 'Mobile Recharge'
-              ? `-₹${item?.deduct_amount}`
-              : `+₹${item?.deduct_amount}`}
-          </Text>
-          {
-            // {item?.deduct_reason === 'Mobile Recharge' && (
-          }
-          <Text
-            style={[
-              styles.txnAmount,
-              item.status === '1' ? styles.successText : styles.faildText,
-            ]}
-          >
-            {item?.status === '1' ? 'Success' : 'Faild'}
-          </Text>
-          {
-            // )}/
-          }
-          <Text style={[styles.deductText, styles.deductTextSpace]}>
-            Balance : {item?.updated_balance}
-          </Text>
+        <View style={styles.infoRow}>
+          <Text style={styles.label}>Mobile No.</Text>
+          <Text style={styles.value}>{item.mobile}</Text>
+        </View>
 
-          <Pressable
-            style={styles.repeteBox}
-            onPress={() => {
-              navigation.navigate('ServiceStack', {
-                screen: 'MobileRecharge',
-                params: {
-                  RechargeAmount: item?.deduct_amount,
-                  MobNumber: item?.mobile_no,
-                },
-              });
-            }}
-          >
-            <Image
-              source={Icons.repeatIcon}
-              style={styles.repeateIcon}
-              resizeMode="contain"
-            />
-            <Text style={styles.repeatText}> Repeat</Text>
-          </Pressable>
+        <View style={styles.infoRow}>
+          <Text style={styles.label}>Ref ID</Text>
+          <Text style={styles.value}>{item.ref_id}</Text>
+        </View>
+
+        <View style={styles.infoRow}>
+          <Text style={styles.label}>Amount</Text>
+          <Text style={styles.amount}>₹{Number(item.amount).toFixed(0)}</Text>
+        </View>
+
+        <View style={styles.footer}>
+          <Text style={styles.date}>
+            {formatDateDayMonthShortYear(item.date)}
+          </Text>
         </View>
       </View>
     );
@@ -286,25 +351,46 @@ const WalletScreen = ({ navigation }) => {
   //   }
   // };
 
-  const fetchWalletHistory = async () => {
+  const handleHistory = async id => {
+    const params = {
+      userId: id,
+      fromDate: '',
+      toDate: '',
+    };
+
     try {
       setLoading(true);
-      const res = await RECHARGE_GET(ApiEndPoint.apiWalletHistory, {
-        apiKey: apikey,
-      });
-
-      if (res.status === true) {
-        setWalletHistory(res?.data);
+      const response = await POST_FORM(
+        ApiEndPoint.mobileRechargeViewAll,
+        params,
+      );
+      console.log('Recharge Report =>ssss', response);
+      if (response?.status === 200) {
+        setRechargeHistory(response?.data?.slice(0, 5));
+      } else {
+        showToast('error', 'Error', response?.message);
+        setRechargeHistory([]);
       }
-    } catch (err) {
-      if (err.offline) {
+    } catch (error) {
+      showToast('error', 'Error', 'Something went wrong');
+      if (error.offline) {
         return;
       }
-      showToast('error', 'Error', err.message || 'Something went wrong');
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const getId = async () => {
+      let localData = await localStorage.getItem(storageKeys.userData);
+      let formatedData = localData ? JSON.parse(localData) : null;
+      if (formatedData?.id) {
+        await handleHistory(formatedData?.id);
+      }
+    };
+    getId();
+  }, []);
 
   const fetchUsebyid = async id => {
     try {
@@ -403,13 +489,6 @@ const WalletScreen = ({ navigation }) => {
   };
 
   useEffect(() => {
-    const getWallet = async () => {
-      await fetchWalletHistory();
-    };
-    getWallet();
-  }, []);
-
-  useEffect(() => {
     const getId = async () => {
       let localData = await localStorage.getItem(storageKeys.userData);
       let formatedData = localData ? JSON.parse(localData) : null;
@@ -424,9 +503,9 @@ const WalletScreen = ({ navigation }) => {
     >
       <Loader visible={loading} />
       <FlatList
-        data={walletHistory}
+        data={rechargeHistory}
         keyExtractor={i => i.id}
-        renderItem={renderTxn}
+        renderItem={renderItem}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.historyContainer}
         ListHeaderComponent={

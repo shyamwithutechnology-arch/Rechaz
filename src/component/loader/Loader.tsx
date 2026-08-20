@@ -1,91 +1,140 @@
-// components/Loader.js
-import React, { useEffect, useRef } from 'react';
-import {
-  View,
-  StyleSheet,
-  Modal,
-  Platform,
-  Animated,
-  Easing,
-} from 'react-native';
-import { Images } from '../../assets/images';
-import { moderateScale } from '../../utils/responsiveSize';
+// // components/Loader.js
+// import React, { useEffect, useRef } from 'react';
+// import {
+//   View,
+//   StyleSheet,
+//   Modal,
+//   Platform,
+//   Animated,
+//   Easing,
+// } from 'react-native';
+// import { Images } from '../../assets/images';
+// import { moderateScale } from '../../utils/responsiveSize';
 
-const Loader = ({ visible = false, message = 'Loading...' }) => {
-  const rotateAnim = useRef(new Animated.Value(0)).current;
+// const Loader = ({ visible = false, message = 'Loading...' }) => {
+//   const rotateAnim = useRef(new Animated.Value(0)).current;
 
-  useEffect(() => {
-    const spin = Animated.loop(
-      Animated.timing(rotateAnim, {
-        toValue: 1,
-        duration: 900, // speed of rotation
-        easing: Easing.linear,
-        useNativeDriver: true,
-      }),
-    );
+//   useEffect(() => {
+//     const spin = Animated.loop(
+//       Animated.timing(rotateAnim, {
+//         toValue: 1,
+//         duration: 900, // speed of rotation
+//         easing: Easing.linear,
+//         useNativeDriver: true,
+//       }),
+//     );
 
-    if (visible) {
-      spin.start();
-    }
+//     if (visible) {
+//       spin.start();
+//     }
 
-    return () => spin.stop();
-  }, [visible]);
+//     return () => spin.stop();
+//   }, [visible]);
 
-  const rotate = rotateAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['0deg', '360deg'],
-  });
+//   const rotate = rotateAnim.interpolate({
+//     inputRange: [0, 1],
+//     outputRange: ['0deg', '360deg'],
+//   });
+
+//   return (
+//     <Modal transparent visible={visible} animationType="fade">
+//       <View style={styles.container}>
+//         <Animated.Image
+//           source={Images?.loaderIcon}
+//           style={{
+//             width: moderateScale(50),
+//             height: moderateScale(50),
+//             transform: [{ rotate }],
+//           }}
+//           resizeMode="contain"
+//         />
+//       </View>
+//     </Modal>
+//   );
+// };
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: 'rgba(0,0,0,.50)',
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//   },
+//   loaderBox: {
+//     backgroundColor: 'white',
+//     padding: 30,
+//     borderRadius: 15,
+//     alignItems: 'center',
+//     ...Platform.select({
+//       ios: {
+//         shadowColor: '#000',
+//         shadowOffset: { width: 0, height: 2 },
+//         shadowOpacity: 0.25,
+//         shadowRadius: 3.84,
+//       },
+//       android: {
+//         elevation: 5,
+//       },
+//     }),
+//   },
+//   message: {
+//     marginTop: 15,
+//     fontSize: 16,
+//     color: '#333',
+//     fontWeight: '500',
+//   },
+// });
+
+// export default Loader;
+
+import React from 'react';
+import { StyleSheet, View, ActivityIndicator, Text } from 'react-native';
+import { useAppTheme } from '../../hooks/useAppTheme';
+
+const Loader = ({ visible = true, message = 'Loading...' }) => {
+  const theme = useAppTheme();
+  const { tokens, scale } = theme;
+  if (!visible) return null;
 
   return (
-    <Modal transparent visible={visible} animationType="fade">
-      <View style={styles.container}>
-        <Animated.Image
-          source={Images?.loaderIcon}
-          style={{
-            width: moderateScale(50),
-            height: moderateScale(50),
-            transform: [{ rotate }],
-          }}
-          resizeMode="contain"
-        />
+    <View style={styles.overlay}>
+      <View style={styles.loaderBox}>
+        <ActivityIndicator size="large" color={tokens.colors.primary} />
       </View>
-    </Modal>
+    </View>
   );
 };
 
+// {message ? <Text style={styles.text}>{message}</Text> : null}
+export default Loader;
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,.50)',
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.4)',
     justifyContent: 'center',
     alignItems: 'center',
+    zIndex: 9999,
+    // elevation: 9999,
   },
   loaderBox: {
-    backgroundColor: 'white',
-    padding: 30,
-    borderRadius: 15,
+    // backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 12,
     alignItems: 'center',
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-      },
-      android: {
-        elevation: 5,
-      },
-    }),
+    minWidth: 120,
+    // elevation: 5,
   },
-  message: {
-    marginTop: 15,
-    fontSize: 16,
+  text: {
+    marginTop: 10,
+    fontSize: 14,
     color: '#333',
-    fontWeight: '500',
   },
 });
-
-export default Loader;
 
 // // components/Loader.js
 // import React from 'react';
