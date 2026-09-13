@@ -25,7 +25,7 @@ const LogoutModal = ({ visible, onClose, handleLodOut }: Props) => {
       animationType="fade"
       contentStyle={styles.logoutContentStyle}
     >
-      <View style={{ borderRadius: 0 }}>
+      <View style={styles.youContainer}>
         <Text style={styles.areYouText}>Are you sure you want to logOut?</Text>
         <View style={styles.btnMainContainer}>
           <Pressable

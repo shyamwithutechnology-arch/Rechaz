@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef, useEffect } from "react";
+import React, { useState, useCallback, useEffect } from 'react';
 import {
   View,
   Text,
@@ -6,123 +6,65 @@ import {
   Pressable,
   TouchableOpacity,
   Image,
-  Alert,
-  SectionList,
-} from "react-native";
+} from 'react-native';
 
 import {
   ScreenLayout,
   AppInput,
   AppHeader,
-  AppModal,
   Loader,
-} from "../../component";
+  CustomButton,
+} from '../../component';
 
-import { useAppTheme } from "../../hooks/useAppTheme";
-import { createStyles } from "./styles";
-import { Icons } from "../../assets/icons";
-import { verticalScale } from "../../utils/responsiveSize";
-import { RECHARGE_GET } from "../../api/request";
-import { showToast } from "../../utils/toast";
-import { apikey } from "../../api/axios";
-import { ApiEndPoint } from "../../api/endPoints";
-import { useRoute } from "@react-navigation/native";
+import { useAppTheme } from '../../hooks/useAppTheme';
+import { createStyles } from './styles';
+import { Icons } from '../../assets/icons';
+import { verticalScale } from '../../utils/responsiveSize';
+import { POST_FORM, RECHARGE_GET } from '../../api/request';
+import { showToast } from '../../utils/toast';
+import { apikey } from '../../api/axios';
+import { ApiEndPoint } from '../../api/endPoints';
+import { useRoute } from '@react-navigation/native';
+import { localStorage, storageKeys } from '../../storage/storage';
+import { Error, Success } from '../../utils/errorHandle';
+import { useAppDispatch } from '../../redux/hooks';
+import { logout } from '../../redux/Slices/authSlice';
 
 const MobileRechargeScreen = ({ navigation }) => {
   const theme = useAppTheme();
   const styles = createStyles(theme);
   const route = useRoute();
-  const { RechargeAmount = null, MobNumber = "" } = route?.params || {};
+  const dispatch = useAppDispatch();
+  const { RechargeAmount = null, MobNumber = '' } = route?.params || {};
 
   const [loading, setLoading] = useState(false);
   const [showPlans, setShowPlans] = useState(true);
-  const [number, setNumber] = useState("");
-  const [operator, setOperator] = useState("");
-  const [state, setState] = useState("");
-  // const [selectedCategory, setSelectedCategory] = useState('');
+  const [number, setNumber] = useState('');
+  const [operator, setOperator] = useState('');
+  const [state, setState] = useState('');
+  const [token, setToken] = useState('');
+  const [userId, setUserId] = useState('');
+  const [operatorId, setOperatorId] = useState('');
+  const [circleId, setCircleId] = useState('');
 
-  console.log("state", state);
-
-  const [operatorId, setOperatorId] = useState("");
-  const [circleId, setCircleId] = useState("");
-
+  // const [circleData, setCircleData] = useState([]);
+  // const [operateIdData, setOperateIdData] = useState([]);
   const [rechargePlane, setRechargePlane] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState('');
 
-  const [amount, setAmount] = useState("");
-  const [visible, setVisible] = useState(false);
-  const debounceRef = useRef(null);
+  const [amount, setAmount] = useState('');
   const [expandedId, setExpandedId] = useState(null);
 
-  const circleData = [
-    { circleName: "UP(West)", circleCode: 97 },
-    { circleName: "PUNJAB", circleCode: 2 },
-    { circleName: "HP", circleCode: 3 },
-    { circleName: "HARYANA", circleCode: 96 },
-    { circleName: "J&K", circleCode: 55 },
-    { circleName: "UP(East)", circleCode: 54 },
-    { circleName: "MUMBAI", circleCode: 92 },
-    { circleName: "MAHARASHTRA", circleCode: 90 },
-    { circleName: "GUJARAT", circleCode: 98 },
-    { circleName: "RAJASTHAN", circleCode: 70 },
-    { circleName: "KOLKATTA", circleCode: 31 },
-    { circleName: "West Bengal", circleCode: 51 },
-    { circleName: "ORISSA", circleCode: 53 },
-    { circleName: "ASSAM", circleCode: 56 },
-    { circleName: "NESA", circleCode: 16 },
-    { circleName: "BIHAR", circleCode: 52 },
-    { circleName: "KARNATAKA", circleCode: 6 },
-    { circleName: "CHENNAI", circleCode: 40 },
-    { circleName: "TAMIL NADU", circleCode: 94 },
-    { circleName: "KERALA", circleCode: 95 },
-    { circleName: "AP", circleCode: 49 },
-    { circleName: "SIKKIM", circleCode: 99 },
-    { circleName: "TRIPURA", circleCode: 100 },
-    { circleName: "Chhattisgarh", circleCode: 101 },
-    { circleName: "GOA", circleCode: 102 },
-    { circleName: "MEGHALAY", circleCode: 103 },
-    { circleName: "MIZZORAM", circleCode: 104 },
-    { circleName: "JHARKHAND", circleCode: 105 },
-  ];
-
-  const operateIdData = [
-    { id: 1, name: "AIRTEL" },
-    { id: 2, name: "IDEA" },
-    { id: 3, name: "BSNL Topup" },
-    { id: 4, name: "BSNL Special" },
-    { id: 5, name: "JIO" },
-    { id: 6, name: "VODAFONE" },
-    { id: 7, name: "AIRTEL DTH" },
-    { id: 8, name: "DISH TV" },
-    { id: 9, name: "RELIANCE BIGTV" },
-    { id: 10, name: "SUN DIRECT" },
-    { id: 11, name: "TATA SKY" },
-    { id: 12, name: "VIDEOCON D2H" },
-  ];
-
-  // const filterOperateId = operateIdData.find(
-  //   item => item?.name === operator),
-  // );
-
-  const filterOperateId = operateIdData.find((item) => item?.name === operator);
-
-  const selectedCircle = circleData.find(
-    (item) => item.circleName.toLowerCase() === state?.toLowerCase(),
-  );
-
-  const circle_id = selectedCircle?.circleCode;
-  const operator_id = filterOperateId?.id;
-
-  const handleToggleDescription = (index) => {
-    setExpandedId((prev) => (prev === index ? null : index));
+  const handleToggleDescription = index => {
+    setExpandedId(prev => (prev === index ? null : index));
   };
 
-  const handleSetAmount = useCallback((value) => {
+  const handleSetAmount = useCallback(value => {
     setAmount(value);
     setShowPlans(false);
   }, []);
 
-  const handleAmount = useCallback((text) => {
+  const handleAmount = useCallback(text => {
     setAmount(text);
 
     if (text.trim()) {
@@ -132,27 +74,32 @@ const MobileRechargeScreen = ({ navigation }) => {
     }
   }, []);
 
-  const validate = () => {
-    const errors = {};
+  // const fetchOperator = async () => {
+  //   try {
+  //     setLoading(true);
+  //     const res = await GET(ApiEndPoint.operaterList);
+  //     if (res?.status === '200') {
+  //       setOperateIdData(res?.operaters || []);
+  //       setCircleData(res?.circle);
+  //     } else {
+  //       Error(res?.MESSAGE);
+  //     }
+  //   } catch (error) {
+  //     if (error?.offline) {
+  //       return;
+  //     }
+  //     Error(error?.message);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
-    if (!number.trim()) {
-      showToast("error", "Error", "Enter mobile number");
-      return false;
-    }
-
-    if (number.trim().length < 10) {
-      showToast("error", "Error", "Enter valid 10 digit number");
-      return false;
-    }
-
-    return true;
-  };
   const fetchPlans = useCallback(async (op, circle, mobile) => {
     try {
       setLoading(true);
 
       const res = await RECHARGE_GET(
-        "user_api_service/recharge/get_offers.php",
+        'user_api_service/recharge/get_offers.php',
         {
           apikey,
           mobile,
@@ -161,14 +108,7 @@ const MobileRechargeScreen = ({ navigation }) => {
         },
       );
 
-      if (res?.STATUS === "0") {
-        // const formattedPlans = Object.entries(res?.RDATA || {}).map(
-        //   ([title, plans]) => ({
-        //     title,
-        //     data: plans,
-        //   }),
-        // );
-        // setRechargePlane(formattedPlans);
+      if (res?.STATUS === '0') {
         const formattedPlans = Object.entries(res?.RDATA || {}).map(
           ([title, plans]) => ({
             title,
@@ -181,53 +121,52 @@ const MobileRechargeScreen = ({ navigation }) => {
           setSelectedCategory(formattedPlans[0].title);
         }
       } else {
-        showToast("error", "Error", "Plan not found");
+        showToast('error', 'Error', 'Plan not found');
       }
     } catch (erorr) {
-      console.log("errrwwww", erorr);
+      console.log('errrwwww', erorr);
 
       if (error?.offline) {
         return;
       }
-      showToast("error", "Error", "SomeThing went wrong");
+      showToast('error', 'Error', 'SomeThing went wrong');
     } finally {
       setLoading(false);
     }
   }, []);
 
   const handleMobilenumber = useCallback(
-    async (mobileValue) => {
-      const cleanNumber = mobileValue?.replace(/\D/g, "").trim();
+    async mobileValue => {
+      const cleanNumber = mobileValue?.replace(/\D/g, '').trim();
 
       if (!cleanNumber || cleanNumber.length !== 10) {
-        showToast("error", "Error", "Enter valid 10 digit mobile number");
+        showToast('error', 'Error', 'Enter valid 10 digit mobile number');
         return;
       }
+
       try {
         setLoading(true);
 
         const res = await RECHARGE_GET(
-          "user_api_service/recharge/get_mobile_operator_circle.php",
+          'user_api_service/recharge/get_mobile_operator_circle.php',
           {
             apikey,
             mobile: cleanNumber,
           },
         );
 
-        console.log("ressssqqqqq", res);
-
-        if (res?.STATUS === "1") {
-          setOperator(res?.Operator || "");
-          setState(res?.Circle || "");
-          setOperatorId(res?.OpCode || "");
-          setCircleId(res?.CircleCode || "");
+        if (res?.STATUS === '1') {
+          setOperator(res?.Operator || '');
+          setState(res?.Circle || '');
+          setOperatorId(res?.OpCode || '');
+          setCircleId(res?.CircleCode || '');
 
           await fetchPlans(res?.OpCode, res?.CircleCode, cleanNumber);
         }
       } catch (e) {
-        console.log("aaaaerr", e);
+        console.log('aaaaerr', e);
 
-        showToast("error", "Error", "SomeThing went wrong");
+        showToast('error', 'Error', 'SomeThing went wrong');
         if (error?.offline) {
           return;
         }
@@ -244,49 +183,53 @@ const MobileRechargeScreen = ({ navigation }) => {
 
     try {
       setLoading(true);
-      const res = await RECHARGE_GET(ApiEndPoint.do_recharge, {
-        apikey,
+      const params = {
+        tokenid: token,
+        device_type: 'App',
+        user_id: userId,
+        operator: operatorId,
+        recharge_amount: amount,
+        circle: circleId,
         mobile: number,
-        operator_id: operatorId,
-        circle_id: circleId,
-        amount,
-        RefTxnId: refTxnId,
-      });
+      };
 
-      console.log("resaaaaaaaaa", res);
-      console.log("pramaaaaa", {
-        apikey,
-        mobile: number,
-        operator_id: operatorId,
-        circle_id: circleId,
-        amount,
-        RefTxnId: refTxnId,
-      });
+      const res = await POST_FORM(ApiEndPoint.do_recharge, params);
 
-      if (res?.STATUS === 1) {
-        showToast("success", "Success", res?.MESSAGE);
-        navigation.navigate("PaymentSuccess", {
-          paymentStatus: res?.STATUS,
+      if (res?.status === 200) {
+        Success(res?.message);
+        navigation.navigate('PaymentSuccess', {
+          paymentStatus: res?.res_code,
           amount: amount,
         });
       } else {
-        showToast("error", "Error", res?.MESSAGE);
-        navigation.navigate("PaymentSuccess", { paymentStatus: res?.STATUS });
+        console.log('resreachrgeError', res);
+        Error(res?.message);
+        navigation.navigate('PaymentSuccess', {
+          paymentStatus: res?.res_code,
+          amount: amount,
+        });
       }
-    } catch (error) {
-      showToast("error", "Error", "SomeThing went wrong");
+    } catch (error: any) {
       if (error?.offline) {
         return;
       }
-    } finally {
-      setLoading(false);
+      Error(
+        error?.response?.data?.message ||
+          error?.response?.data?.msg ||
+          error?.message ||
+          'Recharge failed',
+      );
+
+      if (error?.response?.data?.message === 'Invalid Token') {
+        dispatch(logout());
+      }
     }
   };
 
   const handleNumber = useCallback(
-    (value) => {
+    value => {
       setNumber(value);
-      const cleanNumber = value?.replace(/\D/g, "").trim();
+      const cleanNumber = value?.replace(/\D/g, '').trim();
 
       if (cleanNumber.length === 10) {
         handleMobilenumber(cleanNumber);
@@ -297,9 +240,9 @@ const MobileRechargeScreen = ({ navigation }) => {
 
   const renderOfferList = ({ item, index }) => {
     const isExpanded = expandedId === index;
-    console.log("item?.rs", item?.rs);
+    console.log('item?.rs', item?.rs);
 
-    const description = item?.desc || "";
+    const description = item?.desc || '';
 
     const shortText =
       description.length > 100
@@ -351,7 +294,7 @@ const MobileRechargeScreen = ({ navigation }) => {
           {description.length > 50 && (
             <TouchableOpacity onPress={() => handleToggleDescription(index)}>
               <Text style={styles.seeMoreText}>
-                {isExpanded ? "See Less" : "See More"}
+                {isExpanded ? 'See Less' : 'See More'}
               </Text>
             </TouchableOpacity>
           )}
@@ -364,7 +307,7 @@ const MobileRechargeScreen = ({ navigation }) => {
   //   rechargePlane.find(item => item.title === selectedCategory)?.data || [];
   const currentPlans =
     rechargePlane.find(
-      (item) => item.title === (selectedCategory || rechargePlane?.[0]?.title),
+      item => item.title === (selectedCategory || rechargePlane?.[0]?.title),
     )?.data || [];
 
   useEffect(() => {
@@ -390,6 +333,24 @@ const MobileRechargeScreen = ({ navigation }) => {
   //   }
   // }, [rechargePlane, number]);
 
+  // useEffect(() => {
+  //   fetchOperator();
+  // }, []);
+
+  useEffect(() => {
+    const getId = async () => {
+      let User_token = await localStorage.getItem(storageKeys.userToken);
+      let localData = await localStorage.getItem(storageKeys.userData);
+      let formatedData = localData ? JSON.parse(localData) : null;
+      setToken(User_token);
+      if (formatedData?.id) {
+        setUserId(formatedData?.id);
+      }
+      console.log('formatedData', formatedData);
+    };
+    getId();
+  }, []);
+
   return (
     <ScreenLayout
       header={
@@ -401,7 +362,16 @@ const MobileRechargeScreen = ({ navigation }) => {
       innerContainer={styles.innerContainer}
     >
       <Loader visible={loading} />
-      {/* ✅ INPUT (FIXED BLUR ISSUE) */}
+      {/* <Text
+        onPress={() =>
+          navigation.navigate('PaymentSuccess', {
+            paymentStatus: 'res?.res_code',
+            amount: 'amount',
+          })
+        }
+      >
+        sdaffasf
+      </Text> */}
       <AppInput
         placeholderText="Enter mobile number"
         value={number}
@@ -409,6 +379,7 @@ const MobileRechargeScreen = ({ navigation }) => {
         leftIcon={Icons.phoneIcon}
         leftIconStyle={styles.leftIconStyle}
         keyboardType="number-pad"
+        maxLength={10}
         // onSubmitEditing={() => handleMobilenumber(number)}
         inputBoxStyle={{
           marginTop: verticalScale(10),
@@ -460,7 +431,7 @@ const MobileRechargeScreen = ({ navigation }) => {
               horizontal
               data={rechargePlane}
               showsHorizontalScrollIndicator={false}
-              keyExtractor={(item) => item.title}
+              keyExtractor={item => item.title}
               renderItem={({ item }) => {
                 const isSelected = selectedCategory === item.title;
                 return (
@@ -512,7 +483,6 @@ const MobileRechargeScreen = ({ navigation }) => {
           </Pressable>
         </View>
       )}
-
       {
         // <Text onPress={() => navigation.navigate('PaymentSuccess')}> sucess</Text>
       }

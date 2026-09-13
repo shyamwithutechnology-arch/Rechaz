@@ -1,11 +1,10 @@
 import React, { useMemo } from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import CheckIcon from 'react-native-vector-icons/FontAwesome6';
 import CrossIcon from 'react-native-vector-icons/Entypo';
 import WarnigIcon from 'react-native-vector-icons/FontAwesome6';
 import { AppTheme, useAppTheme } from '../hooks/useAppTheme';
 import { colors, fonts } from '../theme';
-import { Icons } from '../assets/icons';
 
 interface ToastProps {
   text1?: string;
@@ -18,19 +17,14 @@ export const toastConfig = {
     const { moderateScale } = theme;
     const styles = useMemo(() => createStyle(theme), [theme]);
 
-    // <CheckIcon
-    //   name="check"
-    //   size={moderateScale(14.5)}
-    //   color={colors.white}
-    // />
     return (
       <View style={[styles.toast, styles.success]}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <View style={styles.checkIconBox}>
-            <Image
-              source={Icons.successIcon}
-              style={styles.successIcon}
-              resizeMode="contain"
+            <CheckIcon
+              name="check"
+              size={moderateScale(14.5)}
+              color={colors.white}
             />
           </View>
           <View style={styles.successRightBox}>
@@ -50,16 +44,15 @@ export const toastConfig = {
     return (
       <View style={[styles.toast, styles.error]}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <View style={styles.checkIconBox}>
-            <Image
-              source={Icons.cancelIcon}
-              style={styles.errorIcon}
-              resizeMode="contain"
-              tintColor={theme.tokens.colors.white}
+          <View style={[styles.checkIconBox, { backgroundColor: '#FB5758' }]}>
+            <CrossIcon
+              name="cross"
+              color={colors.white}
+              size={moderateScale(20)}
             />
           </View>
           <View style={styles.successRightBox}>
-            <Text style={styles.text1}>{text1}</Text>
+            <Text style={[styles.text1, { color: colors.red }]}>{text1}</Text>
             {text2 ? <Text style={styles.text2}>{text2}</Text> : null}
           </View>
         </View>
@@ -75,14 +68,11 @@ export const toastConfig = {
     return (
       <View style={[styles.toast, styles.info]}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <View style={styles.checkIconBox}>
-            <Image
-              source={Icons.infoIcon}
-              style={styles.errorIcon}
-              resizeMode="contain"
-              // tintColor={theme.tokens.colors.white}
-            />
-          </View>
+          <WarnigIcon
+            name="circle-exclamation"
+            color={colors.warning || '#F5A623'} // Fallback if spelling is warning vs warnig
+            size={moderateScale(30)}
+          />
           <View style={styles.successRightBox}>
             <Text style={[styles.text1, { color: colors.black }]}>{text1}</Text>
             {text2 ? <Text style={styles.text2}>{text2}</Text> : null}
@@ -100,43 +90,31 @@ const createStyle = (theme: AppTheme) => {
       width: '92%',
       paddingHorizontal: moderateScale(12),
       paddingVertical: moderateScale(10),
-      borderRadius: moderateScale(15),
-      // marginHorizontal: moderateScale(10),
+      borderRadius: moderateScale(16),
+      marginHorizontal: moderateScale(10),
       shadowColor: '#000',
       shadowOpacity: 0.2,
       shadowOffset: { width: 0, height: 2 },
       justifyContent: 'space-between',
     },
     checkIconBox: {
-      // backgroundColor: '#4FDD6B',
-      // height: moderateScale(30),
-      // width: moderateScale(30),
+      backgroundColor: '#4FDD6B',
+      borderRadius: moderateScale(100),
+      height: moderateScale(30),
+      width: moderateScale(30),
       alignItems: 'center',
       justifyContent: 'center',
-      // borderWidth: 1,
-      padding: moderateScale(7),
-      borderRadius: moderateScale(200),
-      borderColor: theme.tokens.colors.white,
-    },
-
-    successIcon: {
-      height: moderateScale(22),
-      width: moderateScale(22),
-    },
-    errorIcon: {
-      height: moderateScale(15),
-      width: moderateScale(15),
     },
     success: {
-      backgroundColor: theme.tokens.colors.green,
+      backgroundColor: '#F1F9F4',
       flexDirection: 'row',
       alignItems: 'center',
       borderColor: '#53CA75',
-      // borderWidth: 1.8,
+      borderWidth: 1.8,
     },
     successRightBox: { marginLeft: moderateScale(13) },
     error: {
-      backgroundColor: colors.red,
+      backgroundColor: '#FCEFEA',
       flexDirection: 'row',
       alignItems: 'center',
       borderColor: '#E84C55',
@@ -151,12 +129,12 @@ const createStyle = (theme: AppTheme) => {
     },
     text1: {
       fontFamily: fonts.UrbanistBold,
-      color: colors.white,
+      color: colors.green,
       fontSize: moderateScale(16),
       marginBottom: moderateScale(2),
     },
     text2: {
-      color: colors.white,
+      color: '#68625D',
       fontSize: moderateScale(13),
       marginTop: moderateScale(2),
       fontFamily: fonts.UrbanistMedium,

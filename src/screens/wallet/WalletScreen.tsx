@@ -4,7 +4,6 @@ import {
   Text,
   FlatList,
   TouchableOpacity,
-  Image,
   Pressable,
 } from 'react-native';
 import { useAppTheme } from '../../hooks/useAppTheme';
@@ -19,13 +18,16 @@ import {
   ScreenLayout,
 } from '../../component';
 import { POST_FORM, RECHARGE_GET } from '../../api/request';
+import Icon from 'react-native-vector-icons/Ionicons';
 import { ApiEndPoint } from '../../api/endPoints';
-import { apikey } from '../../api/axios';
-import { showToast } from '../../utils/toast';
-import { Icons } from '../../assets/icons';
 import AppDatePicker from '../../component/appDatePicker/AppDatePicker';
-import { formatDateDDMMYYYY } from '../../utils/date';
+import {
+  formatDateDayMonthShortYear,
+  formatDateDDMMYYYY,
+} from '../../utils/date';
 import { localStorage, storageKeys } from '../../storage/storage';
+import { getNumericValue } from '../../utils/validation';
+import { Error, Success } from '../../utils/errorHandle';
 
 type InputState = {
   amount: string;
@@ -37,11 +39,11 @@ const WalletScreen = ({ navigation }) => {
   const theme = useAppTheme();
   const styles = createStyles(theme);
   const [loading, setLoading] = useState(false);
+  const [id, setId] = useState('');
+  const [rechargeHistory, setRechargeHistory] = useState([]);
   const [date, setDate] = useState(new Date());
   const [dateVisible, setDateVisible] = useState(false);
   const [wallet, setWallet] = useState({});
-
-  const [walletHistory, setWalletHistory] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [input, setInput] = useState({
     amount: '',
@@ -55,14 +57,6 @@ const WalletScreen = ({ navigation }) => {
     remark: '',
     paymentType: '',
   });
-
-  // const hanldeInputChange = (field: keyof typeof input, value: string) => {
-  //   let amount = field === 'amount' ? value.replace(/[^0-9]/g, '') : value;
-  //   setInput(prev => ({
-  //     ...prev,
-  //     [field]: amount,
-  //   }));
-  // };
 
   const hanldeInputChange = (field: keyof InputState, value: string) => {
     let formattedValue = value;
@@ -82,6 +76,7 @@ const WalletScreen = ({ navigation }) => {
       [field]: '',
     }));
   };
+
   const handleDateClose = () => {
     setDateVisible(false);
   };
@@ -118,14 +113,6 @@ const WalletScreen = ({ navigation }) => {
       value: 'Cheque',
     },
   ];
-  // const handleAmount = val => {
-  //   setAmount(val);
-
-  //   setError(prev => ({
-  //     ...prev,
-  //     amount: val?.trim() ? '' : 'Please enter amount',
-  //   }));
-  // };
 
   const handleModalClose = () => {
     setModalVisible(false);
@@ -144,126 +131,64 @@ const WalletScreen = ({ navigation }) => {
   };
   const handleBackPress = () => navigation.goBack();
 
-  const formatDateTime = dateString => {
-    const date = new Date(dateString.replace(' ', 'T'));
-
-    const formattedDate = date.toLocaleDateString('en-GB', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-    });
-
-    const formattedTime = date.toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true,
-    });
-
-    return `${formattedDate} | ${formattedTime}`;
-  };
-
-  const handleOperator = operator => {
-    if (operator === 'VODAFONE') {
-      return Icons.viLogoIcon;
-    } else if (operator === 'AIRTEL') {
-      return Icons.airtelIcon;
-    } else if (operator === 'BSNL') {
-      return Icons.bsnlLogo;
-    } else if (operator === 'JIO') {
-      return Icons.bsnlLogo;
+  const getStatusStyle = (status: string) => {
+    switch (status) {
+      case 'SUCCESS':
+        return {
+          bg: '#E6F9F1',
+          color: '#12B76A',
+        };
+      case 'FAILED':
+        return {
+          bg: '#FFECEC',
+          color: '#F04438',
+        };
+      default:
+        return {
+          bg: '#FFF6E5',
+          color: '#F79009',
+        };
     }
   };
 
-  const renderTxn = ({ item }: any) => {
+  const renderItem = ({ item }: any) => {
+    const statusStyle = getStatusStyle(item.status);
     return (
-      <View style={styles.txnCard}>
-        <View style={styles.transHistray}>
-          <View style={styles.logoBranch}>
-            <Image
-              source={handleOperator(item?.operator_id)}
-              style={styles.aritelLogo}
-            />
+      <View style={styles.card}>
+        <View style={styles.headerRow}>
+          <View>
+            {item?.operator && (
+              <Text style={styles.title}>Mobile Recharge</Text>
+            )}
+            <Text style={styles.operator}>{item.operator}</Text>
           </View>
-          <View style={styles.centerContent}>
-            <Text style={styles.mobileRechateText}>{item?.mobile_no}</Text>
-            <Text style={styles.deductText}>{item?.deduct_reason}</Text>
-            <Text style={[styles.txnTitle, styles.txntText]}>
-              Txn ID : {item?.transaction_id}
-            </Text>
-            <Text style={styles.txnTitle}>
-              {formatDateTime(item?.transaction_date)}
+
+          <View style={[styles.statusBox, { backgroundColor: statusStyle.bg }]}>
+            <Text style={[styles.statusText, { color: statusStyle.color }]}>
+              {item.status}
             </Text>
           </View>
         </View>
 
-        {
-          // <View style={styles.transHistray}>
-          //   <Text style={styles.txnTitle}>Opening Balance</Text>
-          //   <Text style={[styles.txnAmount, styles.beforeBalenceText]}>
-          //     ₹{item?.before_balance}
-          //   </Text>
-          // </View>
-          // <View style={styles.transHistray}>
-          //   <Text style={styles.txnTitle}>Current Balance</Text>
-          //   <Text style={[styles.txnAmount, styles.beforeBalenceText]}>
-          //     ₹{item?.updated_balance}
-          //   </Text>
-          // </View>
-          // <View style={styles.transHistray}>
-          //   <Text style={styles.txnTitle}>Status</Text>
-          //   <Text
-          //     style={[
-          //       styles.txnAmount,
-          //       item.status === '1' ? styles.successText : styles.faildText,
-          //     ]}
-          //   >
-          //     {item?.status === '1' ? 'Success' : 'Faild'}
-          //   </Text>
-          // </View>
-        }
-        <View>
-          <Text style={[styles.txnAmount, styles.amountTextColor]}>
-            {item?.deduct_reason === 'Mobile Recharge'
-              ? `-₹${item?.deduct_amount}`
-              : `+₹${item?.deduct_amount}`}
-          </Text>
-          {
-            // {item?.deduct_reason === 'Mobile Recharge' && (
-          }
-          <Text
-            style={[
-              styles.txnAmount,
-              item.status === '1' ? styles.successText : styles.faildText,
-            ]}
-          >
-            {item?.status === '1' ? 'Success' : 'Faild'}
-          </Text>
-          {
-            // )}/
-          }
-          <Text style={[styles.deductText, styles.deductTextSpace]}>
-            Balance : {item?.updated_balance}
-          </Text>
+        <View style={styles.infoRow}>
+          <Text style={styles.label}>Mobile No.</Text>
+          <Text style={styles.value}>{item.canumber}</Text>
+        </View>
 
-          <Pressable
-            style={styles.repeteBox}
-            onPress={() => {
-              navigation.navigate('ServiceStack', {
-                screen: 'MobileRecharge',
-                params: {
-                  RechargeAmount: item?.deduct_amount,
-                  MobNumber: item?.mobile_no,
-                },
-              });
-            }}
-          >
-            <Image
-              source={Icons.repeatIcon}
-              style={styles.repeateIcon}
-              resizeMode="contain"
-            />
-            <Text style={styles.repeatText}> Repeat</Text>
-          </Pressable>
+        <View style={styles.infoRow}>
+          <Text style={styles.label}>Ref ID</Text>
+          <Text style={styles.value}>{item.ref_id}</Text>
+        </View>
+
+        <View style={styles.infoRow}>
+          <Text style={styles.label}>Amount</Text>
+          <Text style={styles.amount}>₹{Number(item.amount).toFixed(0)}</Text>
+        </View>
+
+        <View style={styles.footer}>
+          <Text style={styles.date}>
+            {formatDateDayMonthShortYear(item.date)}
+          </Text>
         </View>
       </View>
     );
@@ -286,25 +211,47 @@ const WalletScreen = ({ navigation }) => {
   //   }
   // };
 
-  const fetchWalletHistory = async () => {
+  const handleHistory = async id => {
+    const params = {
+      userId: id,
+      fromDate: '',
+      toDate: '',
+    };
+
     try {
       setLoading(true);
-      const res = await RECHARGE_GET(ApiEndPoint.apiWalletHistory, {
-        apiKey: apikey,
-      });
+      const response = await POST_FORM(
+        ApiEndPoint.mobileRechargeViewAll,
+        params,
+      );
+      if (response?.status === 200) {
+        setRechargeHistory(response?.data?.slice(0, 5));
+      } else {
+        Error(response?.message);
 
-      if (res.status === true) {
-        setWalletHistory(res?.data);
+        setRechargeHistory([]);
       }
-    } catch (err) {
-      if (err.offline) {
+      // eslint-disable-next-line no-catch-shadow
+    } catch (error) {
+      if (error.offline) {
         return;
       }
-      showToast('error', 'Error', err.message || 'Something went wrong');
+      Error(err?.message);
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const getId = async () => {
+      let localData = await localStorage.getItem(storageKeys.userData);
+      let formatedData = localData ? JSON.parse(localData) : null;
+      if (formatedData?.id) {
+        await handleHistory(formatedData?.id);
+      }
+    };
+    getId();
+  }, []);
 
   const fetchUsebyid = async id => {
     try {
@@ -317,13 +264,13 @@ const WalletScreen = ({ navigation }) => {
       if (res.status === '200') {
         setWallet(res?.data);
       } else {
-        showToast('error', 'Error', res?.message);
+        Error(res?.message);
       }
     } catch (err) {
-      showToast('error', 'Error', 'Something went wrong');
       if (err.offline) {
         return;
       }
+      Error(err?.message);
     } finally {
       setLoading(false);
     }
@@ -348,10 +295,6 @@ const WalletScreen = ({ navigation }) => {
       validationErrors.receiptNo = 'Please enter receipt no';
     }
 
-    // if (!input?.remark?.trim()) {
-    //   validationErrors.remark = 'Please enter remark';
-    // }
-
     setError(validationErrors);
     return Object.values(validationErrors).every(value => value === '');
   };
@@ -362,7 +305,7 @@ const WalletScreen = ({ navigation }) => {
     }
     try {
       const params = {
-        user_id: '11556',
+        user_id: id,
         bank_id: '1',
         deposit_date: date ? formatDateDDMMYYYY(date) : '',
         payment_mode: transactionType,
@@ -370,10 +313,9 @@ const WalletScreen = ({ navigation }) => {
         receipt_no: input?.receiptNo,
         remark: input?.remark,
       };
+
       setLoading(true);
       const res = await POST_FORM(ApiEndPoint.fundRequest, params);
-      console.log('ressssss', res);
-
       setLoading(true);
       if (res?.status === 200) {
         setInput({
@@ -381,57 +323,47 @@ const WalletScreen = ({ navigation }) => {
           receiptNo: '',
           remark: '',
         });
-        showToast(
-          'success',
-          'Success',
-          res?.message || 'Amount add successfully',
-        );
+
+        Success(res?.message || 'Amount add successfully');
 
         setTransactionType(null);
         setModalVisible(false);
       } else {
-        showToast('error', 'Error', res?.message || 'Something went wrong');
+        Error(err?.message);
       }
     } catch (err) {
       if (err?.offline) {
         return;
       }
-      showToast('error', 'Error', err?.message || 'Something went wrong');
+      Error(err?.message);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    const getWallet = async () => {
-      await fetchWalletHistory();
-    };
-    getWallet();
-  }, []);
-
-  useEffect(() => {
     const getId = async () => {
       let localData = await localStorage.getItem(storageKeys.userData);
       let formatedData = localData ? JSON.parse(localData) : null;
       await fetchUsebyid(formatedData?.email);
+      setId(formatedData?.id);
     };
     getId();
   }, []);
 
   return (
     <ScreenLayout
-      header={<AppHeader title="My Wallet" onPress={handleBackPress} />}
+      header={<AppHeader title="Wallet" onPress={handleBackPress} />}
     >
       <Loader visible={loading} />
       <FlatList
-        data={walletHistory}
+        data={rechargeHistory}
         keyExtractor={i => i.id}
-        renderItem={renderTxn}
+        renderItem={renderItem}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.historyContainer}
         ListHeaderComponent={
           <>
-            {/* ================= BALANCE CARD ================= */}
             <View style={styles.balanceCard}>
               <View style={styles.walletBoxRow}>
                 <View>
@@ -450,18 +382,33 @@ const WalletScreen = ({ navigation }) => {
               </View>
             </View>
 
-            {/* ================= RECENT ================= */}
             <Text style={styles.sectionTitle}>Recent Activity</Text>
           </>
         }
       />
 
-      <AppModal visible={modalVisible} onClose={handleModalClose} scrollable>
+      <AppModal
+        visible={modalVisible}
+        onClose={handleModalClose}
+        scrollable={true}
+      >
+        <Pressable
+          style={styles.closeButton}
+          onPress={handleModalClose}
+          hitSlop={10}
+        >
+          <Icon
+            name="close"
+            size={theme.moderateScale(24)}
+            color={theme.tokens.colors.black}
+          />
+        </Pressable>
+
         <Text style={styles.amoutnText}>Amount</Text>
         <AppInput
           value={input.amount}
           handleChange={value => hanldeInputChange('amount', value)}
-          keyboardType="decimal-pad" // Shows numeric keyboard with decimal on iOS/Android
+          keyboardType="decimal-pad"
           placeholderText="0.00"
         />
         {error?.amount && <Text style={styles.errorText}>{error?.amount}</Text>}
@@ -495,7 +442,9 @@ const WalletScreen = ({ navigation }) => {
         </Text>
         <AppInput
           value={input.receiptNo}
-          handleChange={value => hanldeInputChange('receiptNo', value)}
+          handleChange={value =>
+            hanldeInputChange('receiptNo', getNumericValue(value))
+          }
           keyboardType="numeric"
         />
         {error?.receiptNo && (
@@ -505,10 +454,13 @@ const WalletScreen = ({ navigation }) => {
         <Text style={[styles.amoutnText, styles.transactionType]}>
           Remark (Optional)
         </Text>
+
         <AppInput
           value={input.remark}
+          multiline={true}
           handleChange={value => hanldeInputChange('remark', value)}
         />
+
         {error?.remark && <Text style={styles.errorText}>{error?.remark}</Text>}
 
         <AppDatePicker

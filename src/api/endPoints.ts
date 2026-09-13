@@ -1,7 +1,6 @@
 export const ApiEndPoint = {
   LoGIN: 'loginapi',
   MOBILE_OPERATOR: 'get_mobile_operator_circle.php',
-  do_recharge: 'user_api_service/recharge/do_recharge.php?',
   rechargeReport: 'api/v1/recharge_report.php',
   api_balance: 'api/v1/api_balance.php',
   apiWalletHistory: 'api/v1/apiWalletHistory.php?',
@@ -18,5 +17,13 @@ export const ApiEndPoint = {
   fundRequestList: 'fund_request_list',
   getusebyid: 'getusebyid',
   getCompanyBanklist: 'getcompanybanklist',
+  mobileRechargeViewAll: 'mobile_recharge_view_all',
+  accountHistory: 'account_statement',
+  do_recharge: 'doRecharge',
+  operaterList: 'operaterlist',
+  slider: 'slider',
+  notification: 'notification',
+  dashoboardReport: 'dashoboard_report',
+
   // do_recharge: 'recharge/do_recharge.php?',
 };

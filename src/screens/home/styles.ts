@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { AppTheme } from '../../hooks/useAppTheme';
-import { fonts } from '../../theme';
+import { colors, fonts } from '../../theme';
 import { scale } from '../../utils/responsiveSize';
 
 export const createStyles = (theme: AppTheme) => {
@@ -30,10 +30,10 @@ export const createStyles = (theme: AppTheme) => {
       alignItems: 'center',
       justifyContent: 'center',
     },
-    headerRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
+    // headerRow: {
+    //   flexDirection: 'row',
+    //   alignItems: 'center',
+    // },
 
     userName: {
       fontSize: tokens.fontSize.lg,
@@ -89,6 +89,18 @@ export const createStyles = (theme: AppTheme) => {
       marginTop: tokens.spacing.smPlus,
       marginBottom: insets.bottom + verticalScale(60),
     },
+    messText: {
+      fontSize: tokens.fontSize.smPlus,
+      color: colors.primary,
+      fontFamily: fonts.UrbanistSemiBold,
+    },
+    topNotification: {
+      // borderWidth: 1,
+      padding: moderateScale(8),
+      backgroundColor: colors.lightPrimary,
+      borderRadius: tokens.radius.sm,
+      // backgroundColor: '#6db8c5',
+    },
     walletCard: {
       borderRadius: tokens.radius.md,
       padding: tokens.spacing.md,
@@ -139,8 +151,8 @@ export const createStyles = (theme: AppTheme) => {
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
-      marginBottom: tokens.spacing.md,
-      marginTop: tokens.spacing.md,
+      marginBottom: tokens.spacing.sm,
+      marginTop: tokens.spacing.mdPlus,
     },
 
     myBookingText: {
@@ -375,6 +387,101 @@ export const createStyles = (theme: AppTheme) => {
     rightIconStyle: {
       height: moderateScale(15),
       width: moderateScale(15),
+    },
+
+    card: {
+      backgroundColor: tokens.colors.white,
+      borderRadius: tokens.radius.sm,
+      padding: tokens.spacing.md,
+      paddingVertical: tokens.spacing.smPlus,
+      marginBottom: tokens.spacing.sm,
+      borderWidth: 1,
+      borderColor: tokens.colors.lightPrimary,
+      borderLeftWidth: 3.5,
+      borderLeftColor: tokens.colors.primary,
+      elevation: 3,
+      shadowColor: '#0e8d3822',
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.08,
+      shadowRadius: tokens.radius.lg,
+    },
+
+    headerRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'flex-start',
+      marginBottom: tokens.spacing.sm,
+    },
+
+    title: {
+      fontSize: tokens.fontSize.sm,
+      fontFamily: fonts.UrbanistBold,
+      color: tokens.colors.blackDark,
+    },
+
+    operator: {
+      fontSize: tokens.fontSize.xs,
+      fontFamily: fonts.UrbanistMedium,
+      color: tokens.colors.lightGray,
+      marginTop: tokens.spacing.xs,
+    },
+
+    infoRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginTop: tokens.spacing.xs,
+    },
+
+    label: {
+      fontSize: tokens.fontSize.xs,
+      fontFamily: fonts.UrbanistMedium,
+      color: tokens.colors.lightGray,
+    },
+
+    value: {
+      fontSize: tokens.fontSize.sm,
+      fontFamily: fonts.UrbanistSemiBold,
+      color: tokens.colors.blackDark,
+    },
+
+    amount: {
+      fontSize: normalize(19),
+      fontFamily: fonts.UrbanistBold,
+      color: tokens.colors.primary,
+    },
+
+    footer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginTop: tokens.spacing.md,
+      paddingTop: tokens.spacing.sm,
+      borderTopWidth: 1,
+      borderTopColor: '#ede9e9',
+    },
+
+    date: {
+      fontSize: tokens.fontSize.xs,
+      fontFamily: fonts.UrbanistRegular,
+      color: tokens.colors.lightGray,
+    },
+
+    statusBox: {
+      paddingHorizontal: tokens.spacing.sm,
+      paddingVertical: verticalScale(5),
+      borderRadius: tokens.radius.sm,
+      minWidth: scale(80),
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+
+    statusText: {
+      fontSize: normalize(12),
+      fontFamily: fonts.UrbanistBold,
     },
   });
 };

@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from "react";
-import { Image, Text, View, Keyboard } from "react-native";
-import { ScreenLayout } from "../../../component/ScreenContainer/ScreenLayout";
-import { useAppTheme } from "../../../hooks/useAppTheme";
-import LinearGradient from "react-native-linear-gradient";
-import { createStyles } from "./styles";
-import { CustomButton, OTPInput } from "../../../component";
-import { useAppDispatch } from "../../../redux/hooks";
-import { loginSuccess } from "../../../redux/Slices/authSlice";
-import { Images } from "../../../assets/images";
-import { Icons } from "../../../assets/icons";
-import { useRoute } from "@react-navigation/native";
-import { POST_FORM } from "../../../api/request";
-import { ApiEndPoint } from "../../../api/endPoints";
-import { showToast } from "../../../utils/toast";
-import { localStorage, storageKeys } from "../../../storage/storage";
+import React, { useState, useEffect } from 'react';
+import { Image, Text, View, Keyboard } from 'react-native';
+import { ScreenLayout } from '../../../component/ScreenContainer/ScreenLayout';
+import { useAppTheme } from '../../../hooks/useAppTheme';
+import LinearGradient from 'react-native-linear-gradient';
+import { createStyles } from './styles';
+import { CustomButton, OTPInput } from '../../../component';
+import { useAppDispatch } from '../../../redux/hooks';
+import { loginSuccess } from '../../../redux/Slices/authSlice';
+import { Images } from '../../../assets/images';
+import { Icons } from '../../../assets/icons';
+import { useRoute } from '@react-navigation/native';
+import { POST_FORM } from '../../../api/request';
+import { ApiEndPoint } from '../../../api/endPoints';
+import { showToast } from '../../../utils/toast';
+import { localStorage, storageKeys } from '../../../storage/storage';
 
 const OtpRequestScreen = ({ navigation }) => {
   const theme = useAppTheme();
@@ -23,11 +23,11 @@ const OtpRequestScreen = ({ navigation }) => {
   const styles = createStyles(theme);
 
   const dispatch = useAppDispatch();
-  const [otp, setOtp] = useState("");
+  const [otp, setOtp] = useState('');
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({
-    otp: "",
+    otp: '',
   });
 
   const validation = () => {
@@ -35,9 +35,9 @@ const OtpRequestScreen = ({ navigation }) => {
     const formattedOtp = otp.trim();
 
     if (!formattedOtp) {
-      validationError.otp = "Please enter OTP";
+      validationError.otp = 'Please enter OTP';
     } else if (formattedOtp.length !== 6) {
-      validationError.otp = "Please enter valid 6 digit OTP";
+      validationError.otp = 'Please enter valid 6 digit OTP';
     }
     // else if (formattedOtp !== "123456") {
     //   validationError.otp = "Please enter valid OTP";
@@ -62,7 +62,9 @@ const OtpRequestScreen = ({ navigation }) => {
       const res = await POST_FORM(ApiEndPoint.LoGIN, params);
 
       if (res?.status === 200) {
-        showToast("success", "Success", res?.message);
+        console.log('reslogicn', res);
+
+        showToast('success', 'Success', res?.message);
         // const fakeToken = 'static-token-123456';
         // dispatch(loginSuccess(fakeToken));
         await localStorage.setItem(storageKeys.userToken, res?.token);
@@ -73,24 +75,24 @@ const OtpRequestScreen = ({ navigation }) => {
 
         dispatch(loginSuccess(res?.token));
       } else {
-        showToast("error", "Error", res?.message || "OTP Verification faild");
+        showToast('error', 'Error', res?.message || 'OTP Verification faild');
       }
     } catch (error) {
-      console.log("FETCH ERROR =>", error);
+      console.log('FETCH ERROR =>', error);
       if (error.offline) {
         return;
       }
-      showToast("error", "Error", "Something went wrong");
+      showToast('error', 'Error', 'Something went wrong');
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
+    const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
       setKeyboardVisible(true);
     });
-    const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
+    const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
       setKeyboardVisible(false);
     });
     return () => {
@@ -125,7 +127,7 @@ const OtpRequestScreen = ({ navigation }) => {
 
           <CustomButton
             title="Verify & Login"
-            style={{ width: "90%" }}
+            style={{ width: '90%' }}
             onPress={handleOptVerified}
           />
           <Text style={styles.changeText}>Change Number</Text>
@@ -137,7 +139,7 @@ const OtpRequestScreen = ({ navigation }) => {
               <View style={styles.earPhoneBox}>
                 <Image
                   source={Icons.earPhone}
-                  tintColor={"#0E8D39"}
+                  tintColor={'#0E8D39'}
                   style={styles.earPhone}
                 />
               </View>

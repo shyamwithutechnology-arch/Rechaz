@@ -244,7 +244,7 @@ export const createStyles = (theme: AppTheme) => {
     rupperBox: {
       flexDirection: 'row',
       alignItems: 'center',
-      marginTop: verticalScale(10),
+      // marginTop: verticalScale(10),
       // justifyContent: 'center',
     },
     priceText: {
@@ -272,6 +272,7 @@ export const createStyles = (theme: AppTheme) => {
     rowBox: {
       flexDirection: 'row',
       alignItems: 'center',
+      // justifyContent: 'center',
     },
     validitBox: {
       marginLeft: scale(30),
@@ -317,7 +318,7 @@ export const createStyles = (theme: AppTheme) => {
       alignItems: 'center',
       justifyContent: 'center',
       backgroundColor: tokens.colors.primary,
-      marginTop: verticalScale(10),
+      marginTop: verticalScale(15),
     },
     seePlanBtn: {
       paddingVertical: verticalScale(4),
@@ -327,7 +328,7 @@ export const createStyles = (theme: AppTheme) => {
       justifyContent: 'center',
       backgroundColor: '#035ab0',
       alignSelf: 'flex-end',
-      // marginTop: verticalScale(10),
+      marginTop: verticalScale(3),
     },
     // recharge
     categoryContainer: {
