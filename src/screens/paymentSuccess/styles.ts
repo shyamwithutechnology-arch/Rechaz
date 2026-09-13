@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { AppTheme } from '../../hooks/useAppTheme';
-import { fonts } from '../../theme';
+import { colors, fonts } from '../../theme';
+import { radius } from '../../utils/responsiveSize';
 
 export const createStyles = (theme: AppTheme) => {
   const { tokens, verticalScale, scale, normalize, moderateScale } = theme;
@@ -21,12 +22,20 @@ export const createStyles = (theme: AppTheme) => {
       marginHorizontal: tokens.spacing.xxs,
       paddingVertical: tokens.spacing.sm,
       width: '100%',
-
       paddingHorizontal: tokens.spacing.md,
       overflow: 'hidden',
       position: 'relative',
     },
 
+    paymentIconBox: {
+      // borderWidth: 1,
+      alignSelf: 'center',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: moderateScale(10),
+      backgroundColor: '#c6ffd9b1',
+      borderRadius: scale(50),
+    },
     leftCurve: {
       position: 'absolute',
       left: -12,
@@ -34,7 +43,7 @@ export const createStyles = (theme: AppTheme) => {
       height: moderateScale(24),
       width: moderateScale(24),
       borderRadius: moderateScale(12),
-      backgroundColor: '#DBEDEB',
+      backgroundColor: '#c6ffd9b5',
       zIndex: 10,
     },
 
@@ -45,13 +54,13 @@ export const createStyles = (theme: AppTheme) => {
       height: moderateScale(24),
       width: moderateScale(24),
       borderRadius: moderateScale(12),
-      backgroundColor: '#DBEDEB',
+      backgroundColor: '#c6ffd9b5',
       zIndex: 10,
     },
 
     rightIconBox: {
       backgroundColor: tokens.colors.green,
-      padding: moderateScale(10),
+      padding: moderateScale(11),
       borderRadius: tokens.radius.xxl,
       alignSelf: 'center',
       marginTop: tokens.spacing.smPlus,
@@ -64,12 +73,12 @@ export const createStyles = (theme: AppTheme) => {
       backgroundColor: tokens.colors.red,
     },
     success: {
-      height: moderateScale(25),
-      width: moderateScale(25),
+      height: moderateScale(18),
+      width: moderateScale(18),
     },
     faildIcon: {
-      height: moderateScale(16),
-      width: moderateScale(16),
+      height: moderateScale(11.5),
+      width: moderateScale(11.5),
     },
     paymentSuccessText: {
       fontSize: tokens.fontSize.lg,
@@ -79,7 +88,7 @@ export const createStyles = (theme: AppTheme) => {
       marginTop: tokens.spacing.xs,
     },
     yourPayment: {
-      fontSize: tokens.fontSize.sm,
+      fontSize: normalize(13),
       color: '#474747',
       fontFamily: fonts.UrbanistRegular,
       alignSelf: 'center',
@@ -147,9 +156,10 @@ export const createStyles = (theme: AppTheme) => {
       marginTop: tokens.spacing.sm,
     },
     btnBox: {
-      width: '50%',
+      width: '70%',
       marginVertical: verticalScale(10),
       paddingVertical: verticalScale(10),
+      marginTop: verticalScale(10),
       // height: verticalScale(10),
     },
   });

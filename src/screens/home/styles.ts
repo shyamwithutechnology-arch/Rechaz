@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { AppTheme } from '../../hooks/useAppTheme';
-import { fonts } from '../../theme';
+import { colors, fonts } from '../../theme';
 import { scale } from '../../utils/responsiveSize';
 
 export const createStyles = (theme: AppTheme) => {
@@ -88,6 +88,18 @@ export const createStyles = (theme: AppTheme) => {
     bannerTop: {
       marginTop: tokens.spacing.smPlus,
       marginBottom: insets.bottom + verticalScale(60),
+    },
+    messText: {
+      fontSize: tokens.fontSize.smPlus,
+      color: colors.primary,
+      fontFamily: fonts.UrbanistSemiBold,
+    },
+    topNotification: {
+      // borderWidth: 1,
+      padding: moderateScale(8),
+      backgroundColor: colors.lightPrimary,
+      borderRadius: tokens.radius.sm,
+      // backgroundColor: '#6db8c5',
     },
     walletCard: {
       borderRadius: tokens.radius.md,

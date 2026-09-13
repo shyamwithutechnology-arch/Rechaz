@@ -29,6 +29,7 @@ import { showToast } from '../../../utils/toast';
 import { POST_FORM } from '../../../api/request';
 import { ApiEndPoint } from '../../../api/endPoints';
 import { localStorage, storageKeys } from '../../../storage/storage';
+import { CustomInfo } from '../../../utils/errorHandle';
 
 const LoginScreen = ({ navigation }) => {
   const theme = useAppTheme();
@@ -91,6 +92,7 @@ const LoginScreen = ({ navigation }) => {
         username: input.username.trim(),
         password: input.password.trim(),
       };
+      console.log('parama', params);
 
       setLoading(true);
       const res = await POST_FORM(ApiEndPoint.LoGIN, params);
@@ -102,6 +104,8 @@ const LoginScreen = ({ navigation }) => {
           name: input.username.trim(),
           pass: input?.password.trim(),
         });
+      } else if (res?.status === 400) {
+        CustomInfo(res?.message || 'Wrong credentials');
       } else {
         showToast('error', 'Error', res?.message || 'Login faild');
       }
@@ -182,7 +186,7 @@ const LoginScreen = ({ navigation }) => {
           onPress={handleLogin}
         />
 
-        <View style={styles.mainBoxSupport}>
+        {/* <View style={styles.mainBoxSupport}>
           <View style={styles.earPhoneBox}>
             <Image
               source={Icons.earPhone}
@@ -196,7 +200,7 @@ const LoginScreen = ({ navigation }) => {
 
             <Text style={styles.supportNuber}>+91 9612351141</Text>
           </View>
-        </View>
+        </View> */}
         <Text style={styles.versionText}>Version 1.0</Text>
       </LinearGradient>
     </ScreenLayout>
@@ -205,30 +209,156 @@ const LoginScreen = ({ navigation }) => {
 
 export default LoginScreen;
 
-// // const fakeToken = 'static-token-123456';
-// // dispatch(loginSuccess(fakeToken)); style={styles.RechazText}
-// // Alert.alert('success');
-// // navigation.navigate('MainTab');
+// import React, { useEffect, useState } from 'react';
+// import { View, Text, FlatList } from 'react-native';
+// import { createStyles } from './styles';
+// import { AppHeader, Loader, ScreenLayout } from '../../../component';
+// import { showToast } from '../../../utils/toast';
+// import { formatDateDayMonthShortYear } from '../../../utils/date';
+// import { useAppTheme } from '../../../hooks/useAppTheme';
+// import { POST_FORM } from '../../../api/request';
+// import { ApiEndPoint } from '../../../api/endPoints';
+// import { localStorage, storageKeys } from '../../../storage/storage';
 
-// // <View style={styles.inputContainer}>
-// //   <PhoneIcon name="call-outline" size={20} />
-// //   <TextInput
-// //     placeholder="Enter Mobile Number"
-// //     style={styles.input}
-// //     placeholderTextColor={tokens.colors.placeHolderColor}
-// //   />
-// // </View>
+// const AccountHistoryScreen = ({ navigation }) => {
+//   const theme = useAppTheme();
+//   const styles = createStyles(theme);
 
-// // loading={loading}
+//   const [rechargeHistory, setRechargeHistory] = useState([]);
+//   const [loading, setLoading] = useState(false);
+//   console.log('rechargeHistory', rechargeHistory);
 
-// {
-//   /* List */
-// }
-// // <FlatList
-// //   data={rechargeHistory}
-// //   keyExtractor={(item) => item.RecId}
-// //   renderItem={renderItem}
-// //   showsVerticalScrollIndicator={false}
-// //   ListEmptyComponent={EmptyComponent}
-// //   contentContainerStyle={styles.contentContainer}
-// // />
+//   const getStatusStyle = (status: string) => {
+//     switch (status) {
+//       case 'Success':
+//         return {
+//           bg: '#E6F9F1',
+//           color: '#0E8D39',
+//         };
+//       case 'Faild':
+//         return {
+//           bg: '#FFECEC',
+//           color: '#F04438',
+//         };
+//       default:
+//         return {
+//           color: '#F79009',
+//           bg: '#FFF6E5',
+//         };
+//     }
+//   };
+
+//   const renderItem = ({ item }: any) => {
+//     const statusStyle = getStatusStyle(item.status);
+//     return (
+//       <View style={styles.card}>
+//         <View style={styles.headerRow}>
+//           <View>
+//             {item?.operator && (
+//               <Text style={styles.title}>Mobile Recharge</Text>
+//             )}
+//             <Text style={styles.operator}>{item.operator}</Text>
+//           </View>
+
+//           <View style={[styles.statusBox, { backgroundColor: statusStyle.bg }]}>
+//             <Text style={[styles.statusText, { color: statusStyle.color }]}>
+//               {item.status}
+//             </Text>
+//           </View>
+//         </View>
+
+//         <View style={styles.infoRow}>
+//           <Text style={styles.label}>Mobile No.</Text>
+//           <Text style={styles.value}>{item.mobile}</Text>
+//         </View>
+
+//         <View style={styles.infoRow}>
+//           <Text style={styles.label}>Ref ID</Text>
+//           <Text style={styles.value}>{item.ref_id}</Text>
+//         </View>
+
+//         <View style={styles.infoRow}>
+//           <Text style={styles.label}>Amount</Text>
+//           <Text style={styles.amount}>₹{Number(item.amount).toFixed(0)}</Text>
+//         </View>
+
+//         <View style={styles.footer}>
+//           <Text style={styles.date}>
+//             {formatDateDayMonthShortYear(item.date)}
+//           </Text>
+//         </View>
+//       </View>
+//     );
+//   };
+
+//   const EmptyComponent = () => (
+//     <View style={styles.emptyBox}>
+//       <Text style={styles.emptyText}>No Transactions Found</Text>
+//     </View>
+//   );
+
+//   const handleBackPress = () => {
+//     navigation.goBack();
+//   };
+
+//   const handleHistory = async id => {
+//     const params = {
+//       userId: '11556',
+//       fromDate: '2026-08-20',
+//       toDate: '2026-08-29',
+//       tokenid:
+//         'a0406e00f00c7fe8b79784eb026b27b721857829e6d0cb53ea70d3b33760dd34',
+//       device_type: 'App',
+//       user_type: '6',
+//     };
+
+//     try {
+//       setLoading(true);
+//       const response = await POST_FORM(ApiEndPoint.accountHistory, params);
+//       console.log('account history =>ssss', response);
+//       if (response?.status === 200) {
+//         setRechargeHistory(response?.data);
+//       } else {
+//         showToast('error', 'Error', response?.message);
+//         setRechargeHistory([]);
+//       }
+//     } catch (error) {
+//       showToast('error', 'Error', 'Something went wrong');
+//       if (error.offline) {
+//         return;
+//       }
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   useEffect(() => {
+//     const getId = async () => {
+//       let localData = await localStorage.getItem(storageKeys.userData);
+//       let formatedData = localData ? JSON.parse(localData) : null;
+//       // if (formatedData?.id) {
+//       await handleHistory(formatedData?.id);
+//       // }
+//     };
+//     getId();
+//   }, []);
+
+//   return (
+//     <ScreenLayout
+//       header={<AppHeader title="History" onPress={handleBackPress} />}
+//     >
+//       <Loader visible={loading} />
+//       {/* List */}
+//       <FlatList
+//         data={rechargeHistory}
+//         keyExtractor={item => item?.id}
+//         renderItem={renderItem}
+//         showsVerticalScrollIndicator={false}
+//         ListEmptyComponent={EmptyComponent}
+//         contentContainerStyle={styles.contentContainer}
+//       />
+//     </ScreenLayout>
+//   );
+// };
+
+// export default AccountHistoryScreen;

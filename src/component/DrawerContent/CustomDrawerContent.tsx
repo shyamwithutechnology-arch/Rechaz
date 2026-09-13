@@ -52,7 +52,14 @@ const menuItems = [
   // ],
   // },
 
-  { title: 'History', icon: 'list-outline', route: 'MobileRechargeHistory' },
+  {
+    title: 'Recharge History',
+    icon: 'list-outline',
+    route: 'MobileRechargeHistory',
+  },
+
+  { title: 'Account History', icon: 'list-outline', route: 'AccountHistory' },
+
   { title: 'Wallet', icon: 'wallet-outline', route: 'Wallet' },
   // {
   //   title: 'Payment Request List',
@@ -113,6 +120,7 @@ const nestedRoutes = {
   Profile: { screen: 'ProfileStack', inner: 'Profile' },
   // History: { screen: 'History', inner: 'History' },
   Service: { screen: 'ServiceStack', inner: 'Service' },
+  AccountHistory: { screen: 'HomeStack', inner: 'AccountHistory' },
   Wallet: { screen: 'Wallet', inner: 'Wallet' },
 };
 

@@ -19,6 +19,9 @@ export const createStyles = (theme: AppTheme) => {
     container: {
       height: verticalScale(180),
     },
+    wrapper: {
+      height: 200,
+    },
 
     slide: {
       flex: 1,
@@ -54,5 +57,26 @@ export const createStyles = (theme: AppTheme) => {
       marginHorizontal: moderateScale(3),
       bottom: verticalScale(-20),
     },
+
+    // container: {
+    //   width: '100%',
+    //   height: 200,
+    // },
+
+    // wrapper: {
+    //   height: verticalScale(150),
+    //   // borderWidth: 1,
+    // },
+
+    // slide: {
+    //   flex: 1,
+    //   justifyContent: 'center',
+    //   alignItems: 'center',
+    // },
+
+    // image: {
+    //   width: '100%',
+    //   height: '100%',
+    // },
   });
 };

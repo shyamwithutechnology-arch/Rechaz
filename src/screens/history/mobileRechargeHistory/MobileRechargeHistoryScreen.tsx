@@ -8,6 +8,7 @@ import { useAppTheme } from '../../../hooks/useAppTheme';
 import { POST_FORM } from '../../../api/request';
 import { ApiEndPoint } from '../../../api/endPoints';
 import { localStorage, storageKeys } from '../../../storage/storage';
+import { Error } from '../../../utils/errorHandle';
 
 const MobileRechargeHistoryScreen = ({ navigation }) => {
   const theme = useAppTheme();
@@ -56,10 +57,12 @@ const MobileRechargeHistoryScreen = ({ navigation }) => {
           </View>
         </View>
 
-        <View style={styles.infoRow}>
-          <Text style={styles.label}>Mobile No.</Text>
-          <Text style={styles.value}>{item.mobile}</Text>
-        </View>
+        {item?.canumber && (
+          <View style={styles.infoRow}>
+            <Text style={styles.label}>Mobile No.</Text>
+            <Text style={styles.value}>{item.canumber}</Text>
+          </View>
+        )}
 
         <View style={styles.infoRow}>
           <Text style={styles.label}>Ref ID</Text>
@@ -111,10 +114,10 @@ const MobileRechargeHistoryScreen = ({ navigation }) => {
         setRechargeHistory([]);
       }
     } catch (error) {
-      showToast('error', 'Error', 'Something went wrong');
       if (error.offline) {
         return;
       }
+      Error(error?.message);
     } finally {
       setLoading(false);
     }

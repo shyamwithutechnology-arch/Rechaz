@@ -11,6 +11,8 @@ import MedicalEquipmentScreen from '../../screens/medicalEquipmentModule/Medical
 import MedicineDetailsScreen from '../../screens/medicalEquipmentModule/medicineDetails/MedicineDetailsScreen';
 import ShoppingCartScreen from '../../screens/medicalEquipmentModule/shoppingCart/ShoppingCartScreen';
 import MyOrderScreen from '../../screens/medicalEquipmentModule/myOrder';
+import NotificationScreen from '../../screens/notification/NotificationScreen';
+import AccountHistoryScreen from '../../screens/history/accountHistory/AccountHistoryScreen';
 
 // const Stack = createStaticNavigation();
 const Stack = createNativeStackNavigator<MainTabParamList>();
@@ -33,6 +35,8 @@ const HomeStack = () => {
       <Stack.Screen name="MedicineDetails" component={MedicineDetailsScreen} />
       <Stack.Screen name="ShoppingCart" component={ShoppingCartScreen} />
       <Stack.Screen name="MyOrder" component={MyOrderScreen} />
+      <Stack.Screen name="Notification" component={NotificationScreen} />
+      <Stack.Screen name="AccountHistory" component={AccountHistoryScreen} />
     </Stack.Navigator>
   );
 };

@@ -241,10 +241,13 @@ const ProfileScreen = ({ navigation }) => {
             placeholderText={'Enter your phone numbe'}
             leftIcon={Icons.phoneIcon}
             leftIconStyle={styles.leftIconCall}
-            inputText={styles.inputText}
+            // inputText={styles.inputText}
             value={input.number}
-            editable={false}
-            handleChange={text => handleInputChange('number', text)}
+            maxLength={10}
+            keyboardType="number-pad"
+            handleChange={text =>
+              handleInputChange('number', getNumericValue(text))
+            }
           />
         </View>
 

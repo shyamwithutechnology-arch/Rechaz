@@ -4,7 +4,7 @@ import { fonts } from '../../theme';
 import { scale, verticalScale } from '../../utils/responsiveSize';
 
 export const createStyles = (theme: AppTheme) => {
-  const { tokens, moderateScale, normalize } = theme;
+  const { tokens, normalize } = theme;
 
   return StyleSheet.create({
     container: {
@@ -19,8 +19,6 @@ export const createStyles = (theme: AppTheme) => {
       color: tokens.colors.blackDark,
       marginBottom: tokens.spacing.md,
     },
-
-    /* ================= CARD ================= */
 
     card: {
       borderWidth: 1,
@@ -78,8 +76,6 @@ export const createStyles = (theme: AppTheme) => {
       color: tokens.colors.blackDark,
     },
 
-    /* ================= STATUS ================= */
-
     statusBox: {
       paddingHorizontal: tokens.spacing.sm,
       paddingVertical: tokens.spacing.xxs,
@@ -93,8 +89,6 @@ export const createStyles = (theme: AppTheme) => {
       fontFamily: fonts.UrbanistSemiBold,
     },
 
-    /* ================= EMPTY STATE ================= */
-
     emptyBox: {
       marginTop: tokens.spacing.xxl,
       alignItems: 'center',
@@ -107,7 +101,6 @@ export const createStyles = (theme: AppTheme) => {
       fontFamily: fonts.UrbanistMedium,
     },
 
-    ///
     headerRow: {
       flexDirection: 'row',
       justifyContent: 'space-between',
@@ -148,10 +141,14 @@ export const createStyles = (theme: AppTheme) => {
     },
 
     footer: {
-      marginTop: 10,
+      marginTop: verticalScale(10),
       borderTopWidth: 1,
       borderTopColor: '#ECECEC',
-      paddingTop: 10,
+      paddingTop: verticalScale(10),
+    },
+    walletContainer: {
+      paddingBottom: verticalScale(20),
+      paddingVertical: verticalScale(20),
     },
   });
 };

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   BackHandler,
   FlatList,
@@ -7,46 +7,34 @@ import {
   Text,
   ToastAndroid,
   View,
-} from "react-native";
-import { useFocusEffect } from "@react-navigation/native";
+} from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 
-import { ScreenLayout } from "../../component";
-import { Images } from "../../assets/images";
-import { Icons } from "../../assets/icons";
-import { useAppTheme } from "../../hooks/useAppTheme";
-import { createStyles } from "./styles";
-
-import HomeBannerSlider from "./component/homebanner/HomeBannerSlider";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { showToast } from "../../utils/toast";
-import ImageSlider from "../../component/slider/ImageSlider";
-import { localStorage, storageKeys } from "../../storage/storage";
+import { AppHeader, Loader, ScreenLayout } from '../../component';
+import { Icons } from '../../assets/icons';
+import { useAppTheme } from '../../hooks/useAppTheme';
+import { createStyles } from './styles';
+import { showToast } from '../../utils/toast';
+import ImageSlider from '../../component/slider/ImageSlider';
+import { GET } from '../../api/request';
+import { ApiEndPoint } from '../../api/endPoints';
+import TextTicker from 'react-native-text-ticker';
+import { Error } from '../../utils/errorHandle';
 
 const ServiceScreen = ({ navigation }: any) => {
   const theme = useAppTheme();
   const styles = createStyles(theme);
-  const insets = useSafeAreaInsets();
   const backPressCount = useRef(0);
-
-  const cartCount = 0;
-
-  // -------------------- BANNERS --------------------
-
-  const banners = [
-    { id: "1", image: Images.homeBannerImg1 },
-    { id: "2", image: Images.homeBannerImg1 },
-    // { id: "2", image: Images.homeBannerImg2 },
-    // { id: '3', image: Images.homeBannerImg1 },
-  ];
-
-  // -------------------- SERVICES --------------------
+  const [slider, setSlider] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [notification, setNotification] = useState('');
 
   const rechargeServices = [
     {
       id: 1,
-      service: "Mobile Recharge",
+      service: 'Mobile Recharge',
       image: Icons.mobileRechargeIcon,
-      routes: "MobileRecharge",
+      routes: 'MobileRecharge',
     },
     // {
     //   id: 2,
@@ -62,161 +50,18 @@ const ServiceScreen = ({ navigation }: any) => {
     // },
   ];
 
-  // const ticketBookingServices = [
-  //   {
-  //     id: 1,
-  //     service: 'Flight',
-  //     image: Icons.planeIcon,
-  //     routes: 'Flight Booking',
-  //   },
-  //   {
-  //     id: 2,
-  //     service: 'Bus',
-  //     image: Icons.busIcon,
-  //     routes: 'Bus Booking',
-  //   },
-  //   {
-  //     id: 3,
-  //     service: 'Train',
-  //     image: Icons.trainIcon,
-  //     routes: 'Train Booking',
-  //   },
-  //   {
-  //     id: 4,
-  //     service: 'Hotel',
-  //     image: Icons.hotelIcon,
-  //     routes: 'Hotel Booking',
-  //   },
-  // ];
-
-  // // will payment services
-  // const willPaymentServices = [
-  //   {
-  //     id: 1,
-  //     service: 'Broadband',
-  //     image: Icons.broadbandIcon,
-  //     routes: 'broadband',
-  //   },
-  //   {
-  //     id: 2,
-  //     service: 'Electricity',
-  //     image: Icons.electricityIcon,
-  //     routes: 'electricity',
-  //   },
-  //   {
-  //     id: 3,
-  //     service: 'Cabletv',
-  //     image: Icons.cabletvIcon,
-  //     routes: 'cabletv',
-  //   },
-  //   {
-  //     id: 4,
-  //     service: 'Gas',
-  //     image: Icons.gas,
-  //     routes: 'gas',
-  //   },
-  //   {
-  //     id: 5,
-  //     service: 'Credit Card',
-  //     image: Icons.creditcard,
-  //     routes: 'creditCards',
-  //   },
-  //   {
-  //     id: 6,
-  //     service: 'Donation',
-  //     image: Icons.donation,
-  //     routes: 'donation',
-  //   },
-  //   {
-  //     id: 7,
-  //     service: 'Hospital',
-  //     image: Icons.hospital,
-  //     routes: 'hospital',
-  //   },
-  //   {
-  //     id: 8,
-  //     service: 'Housing Society',
-  //     image: Icons.housingsocietyss,
-  //     routes: 'housingSociety',
-  //   },
-  //   {
-  //     id: 9,
-  //     service: 'Education Fees',
-  //     image: Icons.educationfees,
-  //     routes: 'educationFees',
-  //   },
-  //   {
-  //     id: 10,
-  //     service: 'Landline Postpaid',
-  //     image: Icons.landlinepostpaidss,
-  //     routes: 'landlinePostpaid',
-  //   },
-  //   {
-  //     id: 11,
-  //     service: 'Loan Repayment',
-  //     image: Icons.loanrepayment,
-  //     routes: 'loanRepaymentIcon',
-  //   },
-  //   {
-  //     id: 12,
-  //     service: 'Mobile Prepaid',
-  //     image: Icons.mobilepostpaid,
-  //     routes: 'mobilePrepaid',
-  //   },
-  //   {
-  //     id: 13,
-  //     service: 'Rental',
-  //     image: Icons.rentalss,
-  //     routes: 'rental',
-  //   },
-  //   {
-  //     id: 14,
-  //     service: 'Subsription',
-  //     image: Icons.subscription,
-  //     routes: 'Subsription',
-  //   },
-  // ];
-
-  // // -------------------- BOOKINGS --------------------
-
-  // const finacialServices = [
-  //   {
-  //     id: 1,
-  //     service: 'AEPS',
-  //     image: Icons.AepeIcon,
-  //     routes: 'Aeps',
-  //   },
-  //   {
-  //     id: 2,
-  //     service: 'Money transfer(DMT) ',
-  //     image: Icons.dmtIcon,
-  //     routes: 'MoneyTransfer',
-  //   },
-  //   {
-  //     id: 3,
-  //     service: 'Payout',
-  //     image: Icons.payOutIcon,
-  //     routes: 'Payout',
-  //   },
-  // ];
-
-  // -------------------- HANDLERS --------------------
-
   const handleOpenDrawer = () => {
     navigation.openDrawer();
   };
 
-  // -------------------- RENDER SERVICE ITEM --------------------
-
   const renderServiceItem = ({ item }: any) => {
-    console.log("itemsssss", item);
     return (
       <Pressable
         style={styles.serviceWrapper}
         onPress={() =>
-          item?.routes === "Fastag"
-            ? showToast("success", "Success", "Comming soon")
-            : navigation.navigate("ServiceStack", {
+          item?.routes === 'Fastag'
+            ? showToast('success', 'Success', 'Comming soon')
+            : navigation.navigate('ServiceStack', {
                 screen: item?.routes,
               })
         }
@@ -231,8 +76,7 @@ const ServiceScreen = ({ navigation }: any) => {
     );
   };
 
-  // -------------------- SECTION HEADER --------------------
-
+  // eslint-disable-next-line react/no-unstable-nested-components
   const SectionHeader = ({
     title,
     onPress,
@@ -250,12 +94,54 @@ const ServiceScreen = ({ navigation }: any) => {
     </View>
   );
 
+  const fetchSlider = async () => {
+    try {
+      setLoading(true);
+
+      const res = await GET(ApiEndPoint.slider);
+
+      if (res.status === 200) {
+        setSlider(res);
+      } else {
+        Error(res?.message);
+      }
+    } catch (err) {
+      Error(error?.message);
+
+      if (err.offline) {
+        return;
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchNotifation = async () => {
+    try {
+      setLoading(true);
+      const response = await GET(ApiEndPoint.notification);
+      if (response?.status === 200) {
+        setNotification(response?.message);
+      } else {
+        Error(response?.message);
+        setNotification('');
+      }
+    } catch (error) {
+      if (error.offline) {
+        return;
+      }
+      Error(error?.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useFocusEffect(
     useCallback(() => {
       const onBackPress = () => {
         if (backPressCount.current === 0) {
           backPressCount.current = 1;
-          ToastAndroid.show("Press back again to exit", ToastAndroid.SHORT);
+          ToastAndroid.show('Press back again to exit', ToastAndroid.SHORT);
           setTimeout(() => {
             backPressCount.current = 0;
           }, 2000);
@@ -268,7 +154,7 @@ const ServiceScreen = ({ navigation }: any) => {
       };
 
       const subscription = BackHandler.addEventListener(
-        "hardwareBackPress",
+        'hardwareBackPress',
         onBackPress,
       );
 
@@ -278,14 +164,16 @@ const ServiceScreen = ({ navigation }: any) => {
 
   useEffect(() => {
     const getId = async () => {
-      let localData = await localStorage.getItem(storageKeys.userToken);
-      // let formatedData = localData ? JSON.parse(localData) : null;
-      console.log("formatedData", localData);
+      await fetchSlider();
+      await fetchNotifation();
     };
     getId();
   }, []);
+
   return (
     <ScreenLayout paddingHorizontalStyle={0}>
+      <Loader visible={loading} />
+
       {/* TOP HEADER */}
       <View style={styles.notificationAndUserBox}>
         <View style={styles.headerRow}>
@@ -300,7 +188,7 @@ const ServiceScreen = ({ navigation }: any) => {
           <Text style={styles.servicesText}>Services</Text>
         </View>
 
-        <View style={styles.headerRow}>
+        {/* <View style={styles.headerRow}>
           <Pressable
             style={[
               styles.notificationBox,
@@ -308,7 +196,7 @@ const ServiceScreen = ({ navigation }: any) => {
                 marginRight: theme.tokens.spacing.sm,
               },
             ]}
-            onPress={() => showToast("info", "Comming soon this feture ")}
+            onPress={() => showToast('info', 'Comming soon this feture ')}
           >
             <Image
               source={Icons.notification}
@@ -318,17 +206,17 @@ const ServiceScreen = ({ navigation }: any) => {
 
             <View style={styles.badge}>
               <Text style={styles.badgeText}>
-                {cartCount > 9 ? "9+" : cartCount}
+                {cartCount > 9 ? '9+' : cartCount}
               </Text>
             </View>
           </Pressable>
-        </View>
+        </View> */}
       </View>
 
       <FlatList
         data={rechargeServices}
         renderItem={renderServiceItem}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={item => item.id.toString()}
         horizontal={false}
         numColumns={2}
         showsVerticalScrollIndicator={false}
@@ -336,16 +224,28 @@ const ServiceScreen = ({ navigation }: any) => {
           paddingBottom: theme.tokens.spacing.xxl,
           paddingHorizontal: theme.tokens.spacing.md,
         }}
-        // ---------------- HEADER ----------------
         ListHeaderComponent={
           <View style={styles.headerMainBox}>
-            <ImageSlider images={banners} />
+            <View style={styles.topNotification}>
+              <TextTicker
+                style={styles.messText}
+                duration={50000}
+                loop
+                bounce={false}
+                repeatSpacer={500}
+                marqueeDelay={1000}
+              >
+                {notification}
+              </TextTicker>
+            </View>
+
+            <ImageSlider images={slider} />
 
             <SectionHeader
               title="Recharge Service"
               onPress={() =>
-                navigation.navigate("AllServices", {
-                  title: "Recharge Services",
+                navigation.navigate('AllServices', {
+                  title: 'Recharge Services',
                   services: rechargeServices,
                 })
               }
@@ -358,87 +258,3 @@ const ServiceScreen = ({ navigation }: any) => {
 };
 
 export default ServiceScreen;
-
-// ---------------- FOOTER ----------------
-
-// ListFooterComponent={
-//   <>
-//     {/* MY BOOKINGS */}
-
-//     <SectionHeader
-//       title="Financial Services"
-//       onPress={() =>
-//         navigation.navigate('AllServices', {
-//           title: 'Financial Services',
-//           services: finacialServices,
-//         })
-//       }
-//     />
-
-//     <FlatList
-//       data={finacialServices}
-//       renderItem={renderFinacialServices}
-//       keyExtractor={item => item.id.toString()}
-//       horizontal
-//       showsHorizontalScrollIndicator={false}
-//       contentContainerStyle={{
-//         paddingRight: theme.tokens.spacing.sm,
-//       }}
-//     />
-
-//     {/* TICKET BOOKING */}
-
-//     <SectionHeader
-//       title="Ticket Booking Services"
-//       onPress={() =>
-//         navigation.navigate('AllServices', {
-//           title: 'Ticket Booking Services',
-//           services: ticketBookingServices,
-//           screen: 'TicketBooking',
-//         })
-//       }
-//     />
-
-//     <FlatList
-//       data={ticketBookingServices}
-//       renderItem={renderTicketBooking}
-//       keyExtractor={item => item.id.toString()}
-//       horizontal
-//       showsHorizontalScrollIndicator={false}
-//       contentContainerStyle={{
-//         paddingRight: insets.bottom + theme.tokens.spacing.xxl,
-//       }}
-//     />
-
-//     {/* TICKET BOOKING */}
-
-//     <SectionHeader
-//       title="Bill Payment Services"
-//       onPress={() =>
-//         navigation.navigate('AllServices', {
-//           title: 'Bill Payment Services',
-//           services: willPaymentServices,
-//         })
-//       }
-//     />
-//     <FlatList
-//       data={willPaymentServices}
-//       renderItem={renderBillPaymentItem}
-//       keyExtractor={item => item.id.toString()}
-//       horizontal
-//       showsHorizontalScrollIndicator={false}
-//       contentContainerStyle={{
-//         paddingRight: theme.tokens.spacing.md,
-//         paddingBottom: insets.bottom + theme.tokens.spacing.xxl,
-//       }}
-//     />
-//   </>
-// }
-
-// <Pressable style={styles.notificationBox}>
-//             <Image
-//               source={Icons.questionMarkIcon}
-//               style={styles.notificationIcon}
-//               resizeMode="contain"
-//             />
-//           </Pressable>

@@ -201,13 +201,15 @@ export const createStyles = (theme: AppTheme) => {
       fontSize: tokens.fontSize.sm,
       color: '#505050',
       fontFamily: fonts.UrbanistSemiBold,
-      marginBottom: tokens.spacing.xs,
+      marginBottom: tokens.spacing.xsPlus,
+      marginTop: verticalScale(15),
     },
     transactionType: {
       marginTop: tokens.spacing.md,
     },
     subBtn: {
-      marginTop: tokens.spacing.xxl,
+      marginTop: tokens.spacing.mdPlus,
+      marginBottom: insets.bottom + verticalScale(10),
     },
     errorText: {
       color: 'red',
@@ -343,6 +345,38 @@ export const createStyles = (theme: AppTheme) => {
     statusText: {
       fontSize: normalize(12),
       fontFamily: fonts.UrbanistBold,
+    },
+    walletBox: {
+      flex: 1,
+      // backgroundColor: colors.green,
+    },
+    walletContainer: {
+      flexGrow: 1,
+    },
+    walletInnerContainer: {
+      flex: 1,
+    },
+    modalContentStyle: {
+      height: verticalScale(520),
+    },
+    contentStyle: {
+      maxHeight: '60%',
+      // paddingBottom: insets.bottom + verticalScale(10),
+      // flexGrow: 1,
+    },
+    amountBox: {
+      flex: 1,
+    },
+    closeButton: {
+      position: 'absolute',
+      top: moderateScale(4),
+      right: moderateScale(10),
+      zIndex: 10,
+
+      width: moderateScale(36),
+      height: moderateScale(36),
+      alignItems: 'center',
+      justifyContent: 'center',
     },
   });
 };

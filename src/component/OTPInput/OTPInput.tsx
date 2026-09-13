@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View, TextInput } from 'react-native';
 import { useAppTheme } from '../../hooks/useAppTheme';
 import { createStyles } from './styles';
@@ -50,6 +50,15 @@ const OTPInput = ({ onChangeOtp }) => {
       setFocusedIndex(index - 1);
     }
   };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      inputs.current[0]?.focus();
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <View style={styles.container}>
       {otp.map((value, index) => (

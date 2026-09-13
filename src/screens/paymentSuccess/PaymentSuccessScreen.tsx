@@ -24,7 +24,7 @@ const PaymentSuccessScreen = ({ navigation }: Props) => {
   const theme = useAppTheme();
   const styles = createStyles(theme);
   const route = useRoute();
-  const { paymentStatus, amount } = route.params;
+  const { paymentStatus = '', amount = '' } = route.params;
   // let paymentStatus = 1;
   const today = new Date();
 
@@ -39,8 +39,8 @@ const PaymentSuccessScreen = ({ navigation }: Props) => {
   const successScale = useRef(new Animated.Value(1)).current;
   const successOpacity = useRef(new Animated.Value(0)).current;
 
-  const handleReceipt = () => {
-    navigation.goBack();
+  const handleBack = () => {
+    navigation.navigate('HomeStack', { screen: 'Home' });
   };
 
   useEffect(() => {
@@ -102,9 +102,13 @@ const PaymentSuccessScreen = ({ navigation }: Props) => {
   }, [successScale]);
 
   return (
-    <ScreenLayout paddingHorizontalStyle={0} innerContainer={styles.container}>
+    <ScreenLayout
+      paddingHorizontalStyle={0}
+      innerContainer={styles.container}
+      header={<AppHeader title="Payment" onPress={handleBack} />}
+    >
       <LinearGradient
-        colors={['#fff', '#D6EAE8', '#D6EAE8', '#D6EAE8', '#D6EAE8']}
+        colors={['#c6ffd971', theme.tokens.colors.lightPrimary]}
         style={styles.homeContainer}
       >
         <View style={styles.ticketCard}>
@@ -154,21 +158,6 @@ const PaymentSuccessScreen = ({ navigation }: Props) => {
           <View style={styles.dexLine} />
 
           <View style={styles.orderBox}>
-            <Text style={styles.orderIdText}>OrderId</Text>
-            <Text style={styles.orderCareText}>#orderRecharge4578</Text>
-          </View>
-
-          <View style={styles.orderBox}>
-            <Text style={styles.orderIdText}>Reference ID</Text>
-            <Text style={styles.orderCareText}>#refIdz8878</Text>
-          </View>
-
-          <View style={styles.orderBox}>
-            <Text style={styles.orderIdText}>Transaction ID</Text>
-            <Text style={styles.orderCareText}>#trnsz8878</Text>
-          </View>
-
-          <View style={styles.orderBox}>
             <Text style={styles.orderIdText}>Date</Text>
             <Text style={styles.orderCareText}>{date}</Text>
           </View>
@@ -177,10 +166,7 @@ const PaymentSuccessScreen = ({ navigation }: Props) => {
             <Text style={styles.orderIdText}>Time</Text>
             <Text style={styles.orderCareText}>{time}</Text>
           </View>
-          <View style={[styles.orderBox]}>
-            <Text style={styles.orderIdText}>Payment Method</Text>
-            <Text style={styles.orderCareText}>Wallet</Text>
-          </View>
+
           <View style={[styles.orderBox, { marginBottom: 0 }]}>
             <Text style={styles.orderIdText}>Status</Text>
             <Text
@@ -201,6 +187,12 @@ const PaymentSuccessScreen = ({ navigation }: Props) => {
             <Text style={styles.orderIdText}>Amount</Text>
             <Text style={styles.orderCareText}>₹ {amount ?? 0}/-</Text>
           </View>
+
+          <CustomButton
+            title="Go Home"
+            style={styles.btnBox}
+            onPress={handleBack}
+          />
         </View>
       </LinearGradient>
     </ScreenLayout>
@@ -214,3 +206,23 @@ export default PaymentSuccessScreen;
 //             style={styles.btnBox}
 //             onPress={handleReceipt}
 //           />
+
+/* <View style={styles.orderBox}>
+            <Text style={styles.orderIdText}>OrderId</Text>
+            <Text style={styles.orderCareText}>#orderRecharge4578</Text>
+          </View>
+
+          <View style={styles.orderBox}>
+            <Text style={styles.orderIdText}>Reference ID</Text>
+            <Text style={styles.orderCareText}>#refIdz8878</Text>
+          </View>
+
+          <View style={styles.orderBox}>
+            <Text style={styles.orderIdText}>Transaction ID</Text>
+            <Text style={styles.orderCareText}>#trnsz8878</Text>
+          </View> */
+
+/* <View style={[styles.orderBox]}>
+            <Text style={styles.orderIdText}>Payment Method</Text>
+            <Text style={styles.orderCareText}>Wallet</Text>
+          </View> */

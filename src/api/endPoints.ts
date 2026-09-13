@@ -18,8 +18,12 @@ export const ApiEndPoint = {
   getusebyid: 'getusebyid',
   getCompanyBanklist: 'getcompanybanklist',
   mobileRechargeViewAll: 'mobile_recharge_view_all',
+  accountHistory: 'account_statement',
   do_recharge: 'doRecharge',
   operaterList: 'operaterlist',
+  slider: 'slider',
+  notification: 'notification',
+  dashoboardReport: 'dashoboard_report',
 
   // do_recharge: 'recharge/do_recharge.php?',
 };
